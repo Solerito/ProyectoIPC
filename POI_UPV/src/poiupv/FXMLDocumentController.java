@@ -79,6 +79,7 @@ public class FXMLDocumentController implements Initializable {
         // slider y del resultado esperado
         double sliderVal = zoom_slider.getValue();
         zoom_slider.setValue(sliderVal += 0.1);
+        System.out.println("Hola");
     }
 
     @FXML
