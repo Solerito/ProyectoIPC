@@ -87,7 +87,7 @@
                      <graphic>
                         <ImageView fitHeight="15.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../Pract3/JavaFX_Register/src/icons/accept_white.png" />
+                              <Image url="@../resources/accept_white.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -96,7 +96,7 @@
                      <graphic>
                         <ImageView fitHeight="15.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../Pract3/JavaFX_Register/src/icons/cancel_white.png" />
+                              <Image url="@../resources/cancel_white.png" />
                            </image>
                         </ImageView>
                      </graphic>
