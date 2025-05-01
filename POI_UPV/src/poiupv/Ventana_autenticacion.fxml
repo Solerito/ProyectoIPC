@@ -48,7 +48,7 @@
                   <VBox alignment="CENTER_LEFT" fillWidth="false">
                      <children>
                         <Label text="Nombre de usuario:" textFill="#025477" />
-                        <TextField fx:id="email" minHeight="26.0" minWidth="150.0" prefHeight="26.0" prefWidth="350.0" promptText="yourEmail@domain.com" />
+                        <TextField fx:id="email" minHeight="26.0" minWidth="150.0" prefHeight="26.0" prefWidth="350.0" promptText="Pepe1234" />
                         <Label fx:id="emailError" text="Nombre de usuario incorrecto" textFill="#ca0505" visible="false" />
                      </children>
                   </VBox>
@@ -81,7 +81,7 @@
                      <graphic>
                         <ImageView fitHeight="15.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../Pract3/JavaFX_Register/src/icons/accept_white.png" />
+                              <Image url="@../resources/accept_white.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -90,7 +90,7 @@
                      <graphic>
                         <ImageView fitHeight="15.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../Pract3/JavaFX_Register/src/icons/cancel_white.png" />
+                              <Image url="@../resources/cancel_white.png" />
                            </image>
                         </ImageView>
                      </graphic>

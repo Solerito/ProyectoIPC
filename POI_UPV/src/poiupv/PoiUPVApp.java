@@ -20,7 +20,7 @@ public class PoiUPVApp extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("Ventana_aplicacion.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("Ventana_autenticacion.fxml"));
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
         Scene scene = new Scene(root);
         stage.setTitle("Bienvenido");
