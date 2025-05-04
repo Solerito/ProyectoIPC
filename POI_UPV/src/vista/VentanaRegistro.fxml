@@ -54,14 +54,28 @@
                   <VBox alignment="CENTER_LEFT" fillWidth="false">
                      <children>
                         <Label text="Nombre de usuario:" textFill="#025477" />
-                        <TextField fx:id="email" minHeight="26.0" minWidth="150.0" prefHeight="26.0" prefWidth="350.0" promptText="yourEmail@domain.com" />
+                        <TextField fx:id="usuarioField" minHeight="26.0" minWidth="150.0" prefHeight="26.0" prefWidth="350.0" promptText="Pepe123" />
                      </children>
                   </VBox>
-                  <Label fx:id="emailError" text="Nombre de usuario ya en uso" textFill="#ca0505" translateY="5.0" visible="false" />
+                  <Label fx:id="usuarioError" text="Nombre de usuario ya en uso" textFill="#ca0505" translateY="5.0" visible="false" />
                </children>
                <GridPane.margin>
                   <Insets left="12.0" />
                </GridPane.margin>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" minWidth="700.0" spacing="10.0" GridPane.rowIndex="1">
+               <children>
+                  <VBox alignment="CENTER_LEFT" fillWidth="false">
+                     <children>
+                        <Label text="Correo electronico:" textFill="#025477" />
+                        <TextField fx:id="emailField" maxHeight="26.0" maxWidth="349.0" minWidth="200.0" prefHeight="26.0" prefWidth="349.0" promptText="yourEmail@domain.com" />
+                     </children>
+                     <padding>
+                        <Insets left="12.0" top="10.0" />
+                     </padding>
+                  </VBox>
+                  <Label fx:id="emailError" text="Correo ya en uso o incorrecto" textFill="#ca0505" translateY="5.0" visible="false" />
+               </children>
             </HBox>
             <HBox alignment="CENTER_LEFT" minWidth="650.0" prefHeight="53.0" prefWidth="624.0" spacing="10.0" GridPane.rowIndex="3">
                <children>
@@ -72,13 +86,27 @@
                               <Insets top="10.0" />
                            </padding>
                         </Label>
-                        <TextField fx:id="rpassword" minHeight="26.0" minWidth="150.0" prefHeight="26.0" prefWidth="349.0" promptText="yourEmail@domain.com" />
+                        <TextField fx:id="passwordField" minHeight="26.0" minWidth="150.0" prefHeight="26.0" prefWidth="349.0" promptText="Contraseña" />
                      </children>
                      <padding>
                         <Insets left="12.0" />
                      </padding>
                   </VBox>
-                  <Label fx:id="emailError311" prefHeight="17.0" prefWidth="347.0" text="La contraseña debe contener entre 8 y 20 caracteres, alguna mayúsucula, minúscula, digito y carácter especial" textFill="#ca0505" visible="false" />
+                  <Label fx:id="passwordError" prefHeight="17.0" prefWidth="347.0" text="La contraseña debe contener entre 8 y 20 caracteres, alguna mayúsucula, minúscula, digito y carácter especial" textFill="#ca0505" visible="false" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" minWidth="700.0" spacing="10.0" GridPane.rowIndex="5">
+               <children>
+                  <VBox alignment="CENTER_LEFT" fillWidth="false">
+                     <children>
+                        <Label text="Fecha de nacimiento:" textFill="#025477" />
+                        <DatePicker fx:id="dateField" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" />
+                     </children>
+                     <padding>
+                        <Insets left="12.0" />
+                     </padding>
+                  </VBox>
+                  <Label fx:id="dateError" minHeight="26.0" minWidth="150.0" prefHeight="26.0" prefWidth="350.0" text="Fecha de nacimiento incorrecta" textFill="#ca0505" translateY="5.0" visible="false" />
                </children>
             </HBox>
             <HBox alignment="CENTER_RIGHT" spacing="25.0" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="CENTER">
@@ -108,34 +136,6 @@
                <GridPane.margin>
                   <Insets bottom="20.0" right="20.0" top="20.0" />
                </GridPane.margin>
-            </HBox>
-            <HBox alignment="CENTER_LEFT" minWidth="700.0" spacing="10.0" GridPane.rowIndex="5">
-               <children>
-                  <VBox fx:id="birthdate" alignment="CENTER_LEFT" fillWidth="false">
-                     <children>
-                        <Label text="Fecha de nacimiento:" textFill="#025477" />
-                        <DatePicker maxWidth="200.0" minWidth="200.0" prefWidth="200.0" />
-                     </children>
-                     <padding>
-                        <Insets left="12.0" />
-                     </padding>
-                  </VBox>
-                  <Label fx:id="emailError1" minHeight="26.0" minWidth="150.0" prefHeight="26.0" prefWidth="350.0" text="Fecha de nacimiento incorrecta" textFill="#ca0505" translateY="5.0" visible="false" />
-               </children>
-            </HBox>
-            <HBox alignment="CENTER_LEFT" minWidth="700.0" spacing="10.0" GridPane.rowIndex="1">
-               <children>
-                  <VBox alignment="CENTER_LEFT" fillWidth="false">
-                     <children>
-                        <Label text="Correo electronico:" textFill="#025477" />
-                        <TextField fx:id="password" maxHeight="26.0" maxWidth="349.0" minWidth="200.0" prefHeight="26.0" prefWidth="349.0" promptText="yourEmail@domain.com" />
-                     </children>
-                     <padding>
-                        <Insets left="12.0" top="10.0" />
-                     </padding>
-                  </VBox>
-                  <Label fx:id="emailError31" text="Correo ya en uso o incorrecto" textFill="#ca0505" translateY="5.0" visible="false" />
-               </children>
             </HBox>
             <Separator prefWidth="200.0" GridPane.rowIndex="4" GridPane.valignment="CENTER">
                <GridPane.margin>
