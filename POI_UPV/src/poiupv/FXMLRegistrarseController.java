@@ -37,6 +37,9 @@ import javafx.util.converter.LocalDateStringConverter;
  *
  * @author usole
  */
+
+////CLASE CONTROLADORA DE VENTANAREGISTRO.FXML
+
 public class FXMLRegistrarseController implements Initializable {
 
     @FXML
@@ -102,6 +105,10 @@ public class FXMLRegistrarseController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
+        BooleanBinding validFields = Bindings.and(validEmail, validPassword).and(validDate);
+        
+        
 
         validEmail = new SimpleBooleanProperty();
         validEmail.setValue(Boolean.FALSE);
@@ -176,6 +183,9 @@ public class FXMLRegistrarseController implements Initializable {
         };
         dateField.setConverter(localDateStringConverter);
         
+        bAccept.disableProperty().bind(Bindings.not(validFields));
+ 
+        
         
         
         
@@ -184,28 +194,14 @@ public class FXMLRegistrarseController implements Initializable {
 
     @FXML
     private void handleBAcceptOnAction(ActionEvent event) throws IOException {
-        emailField.clear();
-        passwordField.clear();
-        dateField.setValue(null);
+        emailField.getScene().getWindow().hide();
         
-        validEmail.setValue(Boolean.FALSE);
-        validPassword.setValue(Boolean.FALSE);
-        validDate.setValue(Boolean.FALSE);
-        
-        FXMLLoader loader= new  FXMLLoader(getClass().getResource("/vista/VentanaAutenticacion.fxml"));
-        Parent root = loader.load();
-        Scene scene = new Scene(root,800,500);
-        Stage stage = new Stage();
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
-        stage.setScene(scene);
-        stage.setTitle("Ver datos persona");
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.showAndWait();
     }
 
     @FXML
     private void handleBCanceltOnAction(ActionEvent event) {
-    
+        emailField.getScene().getWindow().hide();
+
     }
 
     

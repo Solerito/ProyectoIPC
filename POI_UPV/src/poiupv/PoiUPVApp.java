@@ -27,6 +27,9 @@ public class PoiUPVApp extends Application {
         stage.setTitle("Bienvenido");
         stage.setScene(scene);
         stage.show();
+        
+        
+        //si existe ese usuario accede si no, se elimina el contenido de los Fields
     }
 
     /**

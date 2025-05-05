@@ -47,6 +47,8 @@ import poiupv.Poi;
  *
  * @author jsoler
  */
+
+//CLASE CONTROLADORA DE FXMLDOCUMENT.FXML
 public class FXMLDocumentController implements Initializable {
 
     //=======================================
