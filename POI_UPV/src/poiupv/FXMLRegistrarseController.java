@@ -31,6 +31,8 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.util.converter.LocalDateStringConverter;
+import model.Navigation;
+import model.NavDAOException;
 
 /**
  * FXML Controller class
@@ -73,6 +75,12 @@ public class FXMLRegistrarseController implements Initializable {
     private TextField usuarioField;
     @FXML
     private Label usuarioError;
+    
+    private void checkUser(){
+        //String user = usuarioField.getText();
+        //Navigation instance = getInstance();
+        //boolean isValid = exitsNickName(user);
+    }
 
     private void checkEmail() {
         String email = emailField.getText();
