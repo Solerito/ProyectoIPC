@@ -29,7 +29,7 @@ import javafx.stage.Stage;
  * @author usole
  */
 
-////CLASE CONTROLADORA DE .FXML
+////CLASE CONTROLADORA DE VENTANAAUTENTICACION .FXML
 
 public class FXMLRegisterController implements Initializable {
 
@@ -65,7 +65,7 @@ public class FXMLRegisterController implements Initializable {
         Stage stage = new Stage();
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
         stage.setScene(scene);
-        stage.setTitle("Ver datos persona");
+        stage.setTitle("Aplicación");
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.showAndWait();
         
@@ -78,13 +78,13 @@ public class FXMLRegisterController implements Initializable {
 
     @FXML
     private void RegistrarseButtonAction(ActionEvent event) throws IOException {
-        FXMLLoader loader= new  FXMLLoader(getClass().getResource("/vista/VentanaRegitro.fxml"));
-        Parent root2 =loader.load();
-        Scene scene = new Scene(root2,800,500);
+        FXMLLoader loader= new  FXMLLoader(getClass().getResource("/vista/VentanaRegistro.fxml"));
+        Parent root =loader.load();
+        Scene scene = new Scene(root,800,500);
         Stage stage = new Stage();
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
         stage.setScene(scene);
-        stage.setTitle("Ver datos persona");
+        stage.setTitle("Registrarse");
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.showAndWait();
     }
