@@ -74,7 +74,7 @@ public class Poi {
     }
     
     
-    Poi(String cod, String desc,double x, double y){
+    public Poi(String cod, String desc,double x, double y){
         code=cod;
         description=desc;
         position= new Point2D(x,y);

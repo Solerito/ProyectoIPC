@@ -6,7 +6,11 @@ package javafxmlapplication;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
@@ -16,12 +20,17 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import model.NavDAOException;
+import model.Navigation;
+import model.User;
+import model.sub.SqliteConnection;
 
 /**
  * FXML Controller class
@@ -36,17 +45,24 @@ public class FXMLRegisterController implements Initializable {
     @FXML
     private Label emailError;
     @FXML
-    private Button RegistrarseButton;
-    @FXML
     private Button bAccept;
     @FXML
     private Button bCancel;
     @FXML
-    private PasswordField passwordField;
+    private TextField passwordField;
     @FXML
     private Label passwordError;
     @FXML
     private TextField usuarioField;
+    @FXML
+    private Button RegistrarseButton;
+    
+    boolean usuarioExiste(){
+        String nick = usuarioField.getText();
+        String password = passwordField.getText();
+        
+        return true;
+    }
 
     /**
      * Initializes the controller class.
@@ -55,19 +71,39 @@ public class FXMLRegisterController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         //BooleanBinding validFields = Bindings.and(emailField,passwordField);
         //bAccept.disableProperty().bind(Bindings.not(validFields));
+        try {
+            SqliteConnection sqlite = new SqliteConnection();
+            sqlite.connectSqlite("C:data.db");
+            System.out.println("Base de datos encontrada");
+            try {
+                Navigation.getInstance();
+            } catch (NavDAOException ex) {
+                System.out.println("hola");
+
+            }
+            
+
+        } catch (SQLException ex) {
+            System.out.println("Base de datos no encontrada");
+        }
     }    
 
     @FXML
     private void handleBAcceptOnAction(ActionEvent event) throws IOException {
+        String nick = usuarioField.getText();
+        String pass = passwordField.getText();
+
+        //if(User.chekCredentials(nick,pass)){
         FXMLLoader loader= new  FXMLLoader(getClass().getResource("/vista/FXMLDocument.fxml"));
         Parent root = loader.load();
-        Scene scene = new Scene(root,800,500);
+        Scene scene = new Scene(root,900,500);
         Stage stage = new Stage();
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
         stage.setScene(scene);
         stage.setTitle("Aplicación");
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.showAndWait();
+        //}
         
     }
 
@@ -86,7 +122,7 @@ public class FXMLRegisterController implements Initializable {
         stage.setScene(scene);
         stage.setTitle("Registrarse");
         stage.initModality(Modality.APPLICATION_MODAL);
-        stage.showAndWait();
+        stage.show();
     }
     
 }

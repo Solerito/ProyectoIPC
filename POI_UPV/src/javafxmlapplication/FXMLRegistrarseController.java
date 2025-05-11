@@ -2,10 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
  */
-package poiupv;
+package javafxmlapplication;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import static java.time.temporal.ChronoUnit.YEARS;
 import java.util.ResourceBundle;
@@ -31,8 +32,12 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.util.converter.LocalDateStringConverter;
+import jdk.jfr.FlightRecorder;
+import static model.Navigation.getInstance;
+import model.User;
 import model.Navigation;
 import model.NavDAOException;
+import model.sub.SqliteConnection;
 
 /**
  * FXML Controller class
@@ -113,6 +118,15 @@ public class FXMLRegistrarseController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
+        try {
+            SqliteConnection sqlite = new SqliteConnection();
+            sqlite.connectSqlite("C:data.db");
+            System.out.println("Base de datos encontrada");
+
+        } catch (SQLException ex) {
+            System.out.println("Base de datos no encontrada");
+        }
         
         BooleanBinding validFields = Bindings.and(validEmail, validPassword).and(validDate);
         
@@ -202,8 +216,19 @@ public class FXMLRegistrarseController implements Initializable {
 
     @FXML
     private void handleBAcceptOnAction(ActionEvent event) throws IOException {
-        emailField.getScene().getWindow().hide();
+        try{String user = usuarioField.getText();
+            String email = emailField.getText();
+            String password = passwordField.getText();
+            LocalDate birthdate = LocalDate.now().minusYears(18);
+            Image avatar = new Image(getClass().getResourceAsStream("/Libraries/IPC2025/avatars/deafult.png"));
+            Navigation nav = Navigation.getInstance();
+            User res = nav.registerUser(user, email, password, avatar, birthdate);
+            
+            
+            emailField.getScene().getWindow().hide();
+        }catch(NavDAOException e){
         
+        }
     }
 
     @FXML
