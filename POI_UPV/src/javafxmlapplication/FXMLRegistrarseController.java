@@ -4,6 +4,7 @@
  */
 package javafxmlapplication;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -29,7 +30,10 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.PasswordField;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.util.converter.LocalDateStringConverter;
 import jdk.jfr.FlightRecorder;
@@ -59,7 +63,7 @@ public class FXMLRegistrarseController implements Initializable {
     @FXML
     private TextField emailField;
     @FXML
-    private TextField passwordField;
+    private PasswordField passwordField;
     @FXML
     private Label passwordError;
     @FXML
@@ -80,6 +84,10 @@ public class FXMLRegistrarseController implements Initializable {
     private TextField usuarioField;
     @FXML
     private Label usuarioError;
+    @FXML
+    private Button PredAvatarButton;
+    @FXML
+    private Button subirAvatarButton;
     
     private void checkUser(){
         //String user = usuarioField.getText();
@@ -215,20 +223,20 @@ public class FXMLRegistrarseController implements Initializable {
     }    
 
     @FXML
-    private void handleBAcceptOnAction(ActionEvent event) throws IOException {
-        try{String user = usuarioField.getText();
-            String email = emailField.getText();
-            String password = passwordField.getText();
-            LocalDate birthdate = LocalDate.now().minusYears(18);
-            Image avatar = new Image(getClass().getResourceAsStream("/Libraries/IPC2025/avatars/deafult.png"));
-            Navigation nav = Navigation.getInstance();
-            User res = nav.registerUser(user, email, password, avatar, birthdate);
-            
-            
-            emailField.getScene().getWindow().hide();
-        }catch(NavDAOException e){
+    private void handleBAcceptOnAction(ActionEvent event) throws IOException, NavDAOException {
         
-        }
+        String user = usuarioField.getText();
+        String email = emailField.getText();
+        String password = passwordField.getText();
+        LocalDate birthdate = LocalDate.now().minusYears(18);
+        Image avatar = new Image(getClass().getResourceAsStream("/Libraries/IPC2025/avatars/deafult.png"));
+        
+        Navigation nav = Navigation.getInstance();
+        User res = nav.registerUser(user, email, password, avatar, birthdate);
+        
+            
+        emailField.getScene().getWindow().hide();
+        
     }
 
     @FXML
@@ -236,6 +244,32 @@ public class FXMLRegistrarseController implements Initializable {
         emailField.getScene().getWindow().hide();
 
     }
+
+    @FXML
+    private void subirAvatar(ActionEvent event) {
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Abrir Fichero");
+        fc.getExtensionFilters().addAll(
+                new ExtensionFilter("Ficheros de texto","*.txt"),
+                new ExtensionFilter("Imágenes","*.png","*.jpg","*.gif"),
+                new ExtensionFilter("Sonidos","*.wav","*.mp3","*.aac"),
+                new ExtensionFilter("Todos","*.*"));
+        File selectedfile = fc.showOpenDialog(
+                ((Node)event.getSource()).getScene().getWindow()
+        );
+        
+        //if(selectedfile != null){
+            
+        //}
+    }
+
+    @FXML
+    private void predAvatarAction(ActionEvent event) {
+        Image avatar = new Image(getClass().getResourceAsStream("/Libraries/IPC2025/avatars/deafult.png"));
+    }
+
+    
+    
 
     
     

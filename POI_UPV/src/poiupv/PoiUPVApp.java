@@ -20,7 +20,7 @@ public class PoiUPVApp extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader loader= new  FXMLLoader(getClass().getResource("/vista/VentanaAutenticacion.fxml"));
+        FXMLLoader loader = new  FXMLLoader(getClass().getResource("/vista/VentanaAutenticacion.fxml"));
         Parent root = loader.load();
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
         Scene scene = new Scene(root);
@@ -29,7 +29,7 @@ public class PoiUPVApp extends Application {
         stage.show();
         
         
-        //si existe ese usuario accede si no, se elimina el contenido de los Fields
+        
     }
 
     /**

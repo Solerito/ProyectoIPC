@@ -49,6 +49,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import poiupv.Poi;
 import poiupv.Poi;
+import poiupv.Poi;
 
 /**
  *

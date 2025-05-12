@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -86,7 +87,7 @@
                               <Insets top="10.0" />
                            </padding>
                         </Label>
-                        <TextField fx:id="passwordField" minHeight="26.0" minWidth="150.0" prefHeight="26.0" prefWidth="349.0" promptText="Contraseña" />
+                        <PasswordField fx:id="passwordField" prefWidth="200.0" promptText="Contraseña" />
                      </children>
                      <padding>
                         <Insets left="12.0" />
@@ -153,8 +154,8 @@
                         </Label>
                         <HBox minWidth="230.0" prefHeight="26.0" prefWidth="229.0" VBox.vgrow="ALWAYS">
                            <children>
-                              <Button mnemonicParsing="false" text="Avatar predeterminado" />
-                              <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="80.0" text="Subir avatar" />
+                              <Button fx:id="PredAvatarButton" mnemonicParsing="false" onAction="#predAvatarAction" text="Avatar predeterminado" />
+                              <Button fx:id="subirAvatarButton" mnemonicParsing="false" onAction="#subirAvatar" prefHeight="26.0" prefWidth="80.0" text="Subir avatar" />
                            </children>
                         </HBox>
                      </children>

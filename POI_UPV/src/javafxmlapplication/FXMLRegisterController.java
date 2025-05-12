@@ -29,7 +29,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.NavDAOException;
 import model.Navigation;
-import model.User;
+import model.*;
 import model.sub.SqliteConnection;
 
 /**
@@ -57,12 +57,7 @@ public class FXMLRegisterController implements Initializable {
     @FXML
     private Button RegistrarseButton;
     
-    boolean usuarioExiste(){
-        String nick = usuarioField.getText();
-        String password = passwordField.getText();
-        
-        return true;
-    }
+    
 
     /**
      * Initializes the controller class.
@@ -76,7 +71,8 @@ public class FXMLRegisterController implements Initializable {
             sqlite.connectSqlite("C:data.db");
             System.out.println("Base de datos encontrada");
             try {
-                Navigation.getInstance();
+                Navigation nav = Navigation.getInstance();
+                
             } catch (NavDAOException ex) {
                 System.out.println("hola");
 
@@ -89,21 +85,29 @@ public class FXMLRegisterController implements Initializable {
     }    
 
     @FXML
-    private void handleBAcceptOnAction(ActionEvent event) throws IOException {
+    private void handleBAcceptOnAction(ActionEvent event) throws IOException, NavDAOException {
         String nick = usuarioField.getText();
         String pass = passwordField.getText();
-
-        //if(User.chekCredentials(nick,pass)){
-        FXMLLoader loader= new  FXMLLoader(getClass().getResource("/vista/FXMLDocument.fxml"));
-        Parent root = loader.load();
-        Scene scene = new Scene(root,900,500);
-        Stage stage = new Stage();
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
-        stage.setScene(scene);
-        stage.setTitle("Aplicación");
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.showAndWait();
-        //}
+        Navigation nav = Navigation.getInstance();
+        
+        if(nav.exitsNickName(nick)){
+            
+                
+                User res = nav.authenticate(nick, pass);
+                if(res.chekCredentials(nick, pass)){
+                FXMLLoader loader= new  FXMLLoader(getClass().getResource("/vista/FXMLDocument.fxml"));
+                Parent root = loader.load();
+                Scene scene = new Scene(root,900,500);
+                Stage stage = new Stage();
+                stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
+                stage.setScene(scene);
+                stage.setTitle("Aplicación");
+                stage.initModality(Modality.APPLICATION_MODAL);
+                usuarioField.getScene().getWindow().hide();
+                stage.showAndWait();
+        
+            }
+        }
         
     }
 
@@ -122,7 +126,8 @@ public class FXMLRegisterController implements Initializable {
         stage.setScene(scene);
         stage.setTitle("Registrarse");
         stage.initModality(Modality.APPLICATION_MODAL);
-        stage.show();
+        stage.showAndWait();
     }
+
     
 }
