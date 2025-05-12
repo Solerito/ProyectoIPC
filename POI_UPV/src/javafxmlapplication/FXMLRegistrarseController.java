@@ -93,6 +93,10 @@ public class FXMLRegistrarseController implements Initializable {
     @FXML
     private Button subirAvatarButton;
     
+    //private Image setAvatar(){
+        
+    //}
+    
     private void checkUser() throws NavDAOException{
         String user = usuarioField.getText();
         Navigation nav = Navigation.getInstance();
@@ -282,17 +286,17 @@ public class FXMLRegistrarseController implements Initializable {
                 new ExtensionFilter("Imágenes","*.png","*.jpg","*.gif"),
                 new ExtensionFilter("Sonidos","*.wav","*.mp3","*.aac"),
                 new ExtensionFilter("Todos","*.*"));
-        File selectedfile = fc.showOpenDialog(
+        File fichero = fc.showOpenDialog(
                 ((Node)event.getSource()).getScene().getWindow()
         );
         
-        String path = selectedfile.getAbsolutePath();
+        String path = fichero.getAbsolutePath();
         Image avatar = new Image(getClass().getResourceAsStream(path));
         
         
-        //if(selectedfile != null){
-            
-        //}
+        if(fichero != null){
+           System.out.println("fichero encontrado"); 
+        }
     }
 
     @FXML
