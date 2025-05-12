@@ -84,6 +84,9 @@ public class FXMLRegistrarseController implements Initializable {
     private ChangeListener<String> listenerPassword;
     private ChangeListener<LocalDate> listenerDate;
     private ChangeListener<String> listenerUser;
+    
+    private Image avatar;
+    
     @FXML
     private TextField usuarioField;
     @FXML
@@ -154,7 +157,7 @@ public class FXMLRegistrarseController implements Initializable {
         usuarioField.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (!newVal) {
                 try{checkUser();
-                if (!validUser.get()) {
+                if (validUser.get()) {
                     //If it is not correct, a listener is added to the text or value 
                     //so that the field is validated while it is being edited.
                     if (listenerUser != null) {
@@ -241,7 +244,7 @@ public class FXMLRegistrarseController implements Initializable {
         };
         dateField.setConverter(localDateStringConverter);
         
-        BooleanBinding validFields = Bindings.and(validEmail, validPassword).and(validDate);
+        BooleanBinding validFields = Bindings.and(validEmail, validPassword).and(validDate).and(validUser.not());
         
         bAccept.disableProperty().bind(Bindings.not(validFields));
  
@@ -259,7 +262,7 @@ public class FXMLRegistrarseController implements Initializable {
         String email = emailField.getText();
         String password = passwordField.getText();
         LocalDate birthdate = dateField.getValue();
-        Image avatar = new Image(getClass().getResourceAsStream("/resources/default.png"));
+        
         
         Navigation nav = Navigation.getInstance();
         User res = nav.registerUser(user, email, password, avatar, birthdate);
@@ -276,32 +279,36 @@ public class FXMLRegistrarseController implements Initializable {
     }
 
     @FXML
-    private void subirAvatar(ActionEvent event) {
-        boolean avatarPressed = true;
+    private void subirAvatar(ActionEvent event) throws IOException{
+        
         
         FileChooser fc = new FileChooser();
         fc.setTitle("Abrir Fichero");
         fc.getExtensionFilters().addAll(
-                new ExtensionFilter("Ficheros de texto","*.txt"),
-                new ExtensionFilter("Imágenes","*.png","*.jpg","*.gif"),
-                new ExtensionFilter("Sonidos","*.wav","*.mp3","*.aac"),
+                new ExtensionFilter("Imágenes","*.png","*.jpg"),
                 new ExtensionFilter("Todos","*.*"));
         File fichero = fc.showOpenDialog(
                 ((Node)event.getSource()).getScene().getWindow()
         );
         
-        String path = fichero.getAbsolutePath();
-        Image avatar = new Image(getClass().getResourceAsStream(path));
+        //String path = fichero.getCanonicalPath();
+        //System.out.println(path);
+        //avatar = new Image(getClass().getResource(path).toExternalForm());
         
         
         if(fichero != null){
-           System.out.println("fichero encontrado"); 
+            String ruta = fichero.toURI().toString();  
+            System.out.println("Ruta URI: " + ruta);
+            avatar = new Image(ruta);
+            System.out.println("avatar modificado");
+
+            
         }
     }
 
     @FXML
     private void predAvatarAction(ActionEvent event) {
-        Image avatar = new Image(getClass().getResourceAsStream("/resources/default.png"));
+        avatar = new Image(getClass().getResourceAsStream("/resources/default.png"));
     }
 
     
