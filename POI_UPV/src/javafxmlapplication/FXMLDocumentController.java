@@ -7,11 +7,14 @@ package javafxmlapplication;
 
 import poiupv.*;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -47,6 +50,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import model.NavDAOException;
+import model.Navigation;
+import model.User;
 import poiupv.Poi;
 import poiupv.Poi;
 import poiupv.Poi;
@@ -167,6 +173,12 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Pane paneCarta;
 
+    private String nick;
+    private String email;
+    private String pass;
+    private Image avatar;
+    private LocalDate birthday;
+    
     @FXML
     void zoomIn(ActionEvent event) {
         //================================================
@@ -231,6 +243,14 @@ public class FXMLDocumentController implements Initializable {
         data.add( new Poi("Pista", "Pista de atletismo y campo de futbol", 950, 350));
         System.out.println("Cambio realizado");
     }
+    
+    public void initUser(String u, String e,String p, Image a,LocalDate dt ){
+            nick = u;
+            email = e;
+            pass = p;
+            avatar = a;
+            birthday = dt;        
+        }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -251,6 +271,14 @@ public class FXMLDocumentController implements Initializable {
         contentGroup.getChildren().add(zoomGroup);
         zoomGroup.getChildren().add(map_scrollpane.getContent());
         map_scrollpane.setContent(contentGroup);
+        
+        try {
+            Navigation nav = Navigation.getInstance();
+            User res = nav.authenticate(nick, pass);
+            ivPerfil.setImage(res.getAvatar());
+        } catch (NavDAOException ex) {}
+        
+        
 
     }
 

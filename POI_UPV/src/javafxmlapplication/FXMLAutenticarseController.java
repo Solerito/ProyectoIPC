@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -89,20 +90,25 @@ public class FXMLAutenticarseController implements Initializable {
         String nick = usuarioField.getText();
         String pass = passwordField.getText();
         Navigation nav = Navigation.getInstance();
+        int aciertos = 0;
+        int fallos = 0;
         
         if(nav.exitsNickName(nick)){
             
                 
                 User res = nav.authenticate(nick, pass);
+                Session ses = new Session(LocalDateTime.now(),aciertos,fallos);
                 if(res.chekCredentials(nick, pass)){
-                FXMLLoader loader= new  FXMLLoader(getClass().getResource("/vista/FXMLDocument.fxml"));
+                FXMLLoader loader = new  FXMLLoader(getClass().getResource("/vista/Inicio.fxml"));
                 Parent root = loader.load();
-                Scene scene = new Scene(root,900,500);
+                Scene scene = new Scene(root,650,500);
                 Stage stage = new Stage();
                 stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
                 stage.setScene(scene);
-                stage.setTitle("Aplicación");
+                stage.setTitle("Inicio");
                 stage.initModality(Modality.APPLICATION_MODAL);
+                InicioController controlador2= loader.getController();
+                controlador2.initUser(res.getNickName(), res.getEmail(), res.getPassword(), res.getAvatar(), res.getBirthdate());
                 usuarioField.getScene().getWindow().hide();
                 stage.showAndWait();
         

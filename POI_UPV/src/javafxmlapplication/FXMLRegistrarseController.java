@@ -11,6 +11,8 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import static java.time.temporal.ChronoUnit.YEARS;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -74,12 +76,14 @@ public class FXMLRegistrarseController implements Initializable {
     private BooleanProperty validEmail;
     private BooleanProperty validPassword;
     private BooleanProperty validDate;
+    private BooleanProperty validUser;
 
 
     
     private ChangeListener<String> listenerEmail;
     private ChangeListener<String> listenerPassword;
     private ChangeListener<LocalDate> listenerDate;
+    private ChangeListener<String> listenerUser;
     @FXML
     private TextField usuarioField;
     @FXML
@@ -89,10 +93,12 @@ public class FXMLRegistrarseController implements Initializable {
     @FXML
     private Button subirAvatarButton;
     
-    private void checkUser(){
-        //String user = usuarioField.getText();
-        //Navigation instance = getInstance();
-        //boolean isValid = exitsNickName(user);
+    private void checkUser() throws NavDAOException{
+        String user = usuarioField.getText();
+        Navigation nav = Navigation.getInstance();
+        boolean isValid = nav.exitsNickName(user);
+        validUser.set(isValid);
+        showError(!isValid, usuarioField, usuarioError);
     }
 
     private void checkEmail() {
@@ -136,8 +142,26 @@ public class FXMLRegistrarseController implements Initializable {
             System.out.println("Base de datos no encontrada");
         }
         
-        BooleanBinding validFields = Bindings.and(validEmail, validPassword).and(validDate);
         
+        validUser = new SimpleBooleanProperty();
+        validUser.setValue(Boolean.FALSE);
+    
+        //When the field loses focus, the field is validated. 
+        usuarioField.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal) {
+                try{checkUser();
+                if (!validUser.get()) {
+                    //If it is not correct, a listener is added to the text or value 
+                    //so that the field is validated while it is being edited.
+                    if (listenerUser != null) {
+                        listenerUser = (a, b, c) -> {
+                            try {checkUser();} catch (NavDAOException ex){}
+                        };
+                        usuarioField.textProperty().addListener(listenerUser);
+                    }
+                }}catch(NavDAOException e){}
+            }
+        });
         
 
         validEmail = new SimpleBooleanProperty();
@@ -213,6 +237,8 @@ public class FXMLRegistrarseController implements Initializable {
         };
         dateField.setConverter(localDateStringConverter);
         
+        BooleanBinding validFields = Bindings.and(validEmail, validPassword).and(validDate);
+        
         bAccept.disableProperty().bind(Bindings.not(validFields));
  
         
@@ -228,12 +254,12 @@ public class FXMLRegistrarseController implements Initializable {
         String user = usuarioField.getText();
         String email = emailField.getText();
         String password = passwordField.getText();
-        LocalDate birthdate = LocalDate.now().minusYears(18);
-        Image avatar = new Image(getClass().getResourceAsStream("/Libraries/IPC2025/avatars/deafult.png"));
+        LocalDate birthdate = dateField.getValue();
+        Image avatar = new Image(email);
         
         Navigation nav = Navigation.getInstance();
         User res = nav.registerUser(user, email, password, avatar, birthdate);
-        
+        System.out.println("Usuario Registrado");
             
         emailField.getScene().getWindow().hide();
         
@@ -247,6 +273,8 @@ public class FXMLRegistrarseController implements Initializable {
 
     @FXML
     private void subirAvatar(ActionEvent event) {
+        boolean avatarPressed = true;
+        
         FileChooser fc = new FileChooser();
         fc.setTitle("Abrir Fichero");
         fc.getExtensionFilters().addAll(
@@ -257,6 +285,10 @@ public class FXMLRegistrarseController implements Initializable {
         File selectedfile = fc.showOpenDialog(
                 ((Node)event.getSource()).getScene().getWindow()
         );
+        
+        String path = selectedfile.getAbsolutePath();
+        Image avatar = new Image(getClass().getResourceAsStream(path));
+        
         
         //if(selectedfile != null){
             
