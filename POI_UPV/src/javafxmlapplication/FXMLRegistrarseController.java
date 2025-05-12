@@ -255,7 +255,7 @@ public class FXMLRegistrarseController implements Initializable {
         String email = emailField.getText();
         String password = passwordField.getText();
         LocalDate birthdate = dateField.getValue();
-        Image avatar = new Image(email);
+        Image avatar = new Image(getClass().getResourceAsStream("/resources/default.png"));
         
         Navigation nav = Navigation.getInstance();
         User res = nav.registerUser(user, email, password, avatar, birthdate);
@@ -297,7 +297,7 @@ public class FXMLRegistrarseController implements Initializable {
 
     @FXML
     private void predAvatarAction(ActionEvent event) {
-        Image avatar = new Image(getClass().getResourceAsStream("/Libraries/IPC2025/avatars/deafult.png"));
+        Image avatar = new Image(getClass().getResourceAsStream("/resources/default.png"));
     }
 
     

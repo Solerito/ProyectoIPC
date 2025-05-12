@@ -59,6 +59,7 @@ public class FXMLAutenticarseController implements Initializable {
     private Button RegistrarseButton;
     
     
+        
 
     /**
      * Initializes the controller class.
@@ -98,6 +99,7 @@ public class FXMLAutenticarseController implements Initializable {
                 
                 User res = nav.authenticate(nick, pass);
                 Session ses = new Session(LocalDateTime.now(),aciertos,fallos);
+                
                 if(res.chekCredentials(nick, pass)){
                 FXMLLoader loader = new  FXMLLoader(getClass().getResource("/vista/Inicio.fxml"));
                 Parent root = loader.load();
