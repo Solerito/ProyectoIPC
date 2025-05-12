@@ -40,7 +40,7 @@ import model.sub.SqliteConnection;
 
 ////CLASE CONTROLADORA DE VENTANAAUTENTICACION .FXML
 
-public class FXMLRegisterController implements Initializable {
+public class FXMLAutenticarseController implements Initializable {
 
     @FXML
     private Label emailError;
