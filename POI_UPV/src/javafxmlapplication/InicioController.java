@@ -71,20 +71,9 @@ public class InicioController implements Initializable {
         User res = nav.authenticate(nick, pass);
         
         
-        
-        URL fxmlUrl = getClass().getResource("/vista/Trabajo.fxml");
-        System.out.println("Trabajo.fxml está en: " + fxmlUrl);
-        if (fxmlUrl == null) {
-            throw new RuntimeException("No se localiza /vista/Trabajo.fxml en el classpath");
-        }
-        FXMLLoader loader = new FXMLLoader(fxmlUrl);
-        
-
-        
-        
-        
-        
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/Trabajo.fxml"));
         Parent root = loader.load();
+        
         //FXMLDocumentController controlador2= loader.getController();
         //controlador2.initUser(res.getNickName(), res.getEmail(), res.getPassword(), res.getAvatar(), res.getBirthdate());
         Scene scene = new Scene(root,900,500);
@@ -108,7 +97,7 @@ public class InicioController implements Initializable {
         stage.setTitle("Estadísticas");
         stage.initModality(Modality.APPLICATION_MODAL);
         //estadisticasButton.getScene().getWindow().hide();
-        stage.showAndWait();
+        stage.show();
     }
     
 }

@@ -274,7 +274,7 @@ public class FXMLRegistrarseController implements Initializable {
 
     @FXML
     private void handleBCanceltOnAction(ActionEvent event) {
-        emailField.getScene().getWindow().hide();
+        ((Stage)((Node)event.getSource()).getScene().getWindow()).hide();
 
     }
 

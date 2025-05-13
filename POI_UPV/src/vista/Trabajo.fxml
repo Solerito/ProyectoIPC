@@ -23,7 +23,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
 
-<fx:root prefHeight="556.0" prefWidth="853.0" stylesheets="@../resources/estilos.css" type="VBox" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafxmlapplication.FXMLTrabajoController">
+<VBox prefHeight="556.0" prefWidth="853.0" stylesheets="@../resources/estilos.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafxmlapplication.FXMLTrabajoController">
    <children>
       <BorderPane prefHeight="572.0" prefWidth="853.0">
          <top>
@@ -44,7 +44,7 @@
                                                    <graphic>
                                                       <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                                          <image>
-                                                            <Image url="@../resources/circulo-negro.png" />
+                                                            <Image url="@../resources/circulo%20negro.jpg" />
                                                          </image>
                                                       </ImageView>
                                                    </graphic>
@@ -53,7 +53,7 @@
                                                    <graphic>
                                                       <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                                          <image>
-                                                            <Image url="@../resources/cancelar.png" />
+                                                            <Image url="@../resources/cancelar.jpg" />
                                                          </image>
                                                       </ImageView>
                                                    </graphic>
@@ -62,7 +62,7 @@
                                                    <graphic>
                                                       <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                                          <image>
-                                                            <Image url="@../resources/asterisco.png" />
+                                                            <Image url="@../resources/asterisco.jpg" />
                                                          </image>
                                                       </ImageView>
                                                    </graphic>
@@ -71,7 +71,7 @@
                                                    <graphic>
                                                       <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                                          <image>
-                                                            <Image url="@../resources/estrella-en-negro-de-forma-de-cinco-puntas.png" />
+                                                            <Image url="@../resources/estrella-en-negro-de-forma-de-cinco-puntas.jpg" />
                                                          </image>
                                                       </ImageView>
                                                    </graphic>
@@ -230,7 +230,7 @@
                                        <graphic>
                                           <ImageView fx:id="ivTransportador" fitHeight="150.0" fitWidth="200.0" mouseTransparent="true" preserveRatio="true" visible="false">
                                              <image>
-                                                <Image url="@../resources/transportador.png" />
+                                                <Image url="@../resources/transportador.jpg" />
                                              </image>
                                           </ImageView>
                                        </graphic></MenuItem>
@@ -261,7 +261,7 @@
                      <graphic>
                         <ImageView fx:id="ivPerfil" fitHeight="24.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../resources/usuario.png" />
+                              <Image url="@../resources/usuario.jpg" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -350,4 +350,4 @@
          </left>
       </BorderPane>
    </children>
-</fx:root>
+</VBox>

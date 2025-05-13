@@ -18,6 +18,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -100,6 +101,7 @@ public class FXMLAutenticarseController implements Initializable {
                 User res = nav.authenticate(nick, pass);
                 Session ses = new Session(LocalDateTime.now(),aciertos,fallos);
                 
+                
                 if(res.chekCredentials(nick, pass)){
                 FXMLLoader loader = new  FXMLLoader(getClass().getResource("/vista/Inicio.fxml"));
                 Parent root = loader.load();
@@ -108,20 +110,22 @@ public class FXMLAutenticarseController implements Initializable {
                 stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
                 stage.setScene(scene);
                 stage.setTitle("Inicio");
-                stage.initModality(Modality.APPLICATION_MODAL);
+                //stage.initModality(Modality.APPLICATION_MODAL);
                 InicioController controlador2= loader.getController();
                 controlador2.initUser(res.getNickName(), res.getEmail(), res.getPassword(), res.getAvatar(), res.getBirthdate());
-                usuarioField.getScene().getWindow().hide();
-                stage.showAndWait();
+                ((Stage)((Node)event.getSource()).getScene().getWindow()).hide();
+                stage.show();
         
             }
         }
+            
+        
         
     }
 
     @FXML
     private void handleBCanceltOnAction(ActionEvent event) {
-        usuarioField.getScene().getWindow().hide();
+        ((Stage)((Node)event.getSource()).getScene().getWindow()).hide();
     }
 
     @FXML

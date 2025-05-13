@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package poiupv;
+package javafxmlapplication;
 
 import java.io.IOException;
 import java.net.URL;
@@ -79,6 +79,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
+import poiupv.Poi;
 
 
 public class FXMLTrabajoController implements Initializable {
@@ -243,7 +244,7 @@ public void initialize(URL url, ResourceBundle rb) {
 
     // 4) Carga cruda del PNG desde recursos
     Image raw = new Image(getClass()
-        .getResourceAsStream("/resources/transportador.png"));
+        .getResourceAsStream("/resources/transportador.jpg"));
 
     // 5) Reprocesa para que SOLO las líneas y números queden opacos,
     //    y el fondo totalmente transparente
