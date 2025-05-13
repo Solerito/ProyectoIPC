@@ -7,6 +7,7 @@ package javafxmlapplication;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -79,6 +80,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
+import model.Navigation;
 import poiupv.Poi;
 
 
@@ -223,6 +225,20 @@ private Arc previewArc;
 private enum ModoArco { RADIO_FIJO, RADIO_LIBRE }
 private ModoArco modoArco = ModoArco.RADIO_FIJO;
 
+    private String nick;
+    private String email;
+    private String pass;
+    private Image avatar;
+    private LocalDate birthday;
+    
+    public void initUser(String u, String e,String p, Image a,LocalDate dt ){
+            nick = u;
+            email = e;
+            pass = p;
+            avatar = a;
+            birthday = dt;        
+        }
+
 
     @Override
 public void initialize(URL url, ResourceBundle rb) {
@@ -231,6 +247,9 @@ public void initialize(URL url, ResourceBundle rb) {
     setupZoom();
     setupControls();
     setupPaneClickHandler();
+        
+    
+    
 
     // 2) Grosor por defecto para línea y arco
     seleccionarGrosorGrueso(null);
@@ -721,19 +740,20 @@ public void seleccionarTransportador(ActionEvent e) {
     currentTool    = Tool.PROTRACTOR;
     ivOverlay.setVisible(true);
 }
-    @FXML public void onEditarPerfil(ActionEvent e) {
-        try {
+    @FXML public void onEditarPerfil(ActionEvent e) throws IOException {
+        
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/PerfilPanel.fxml"));
             Parent root = loader.load();
             Stage dialog = new Stage();
             dialog.setTitle("Editar perfil");
             dialog.initOwner(paneCarta.getScene().getWindow());
             dialog.initModality(Modality.APPLICATION_MODAL);
+            PerfilPanelController controlador2= loader.getController();
+            controlador2.initUser(nick, email, pass, avatar, birthday);
+            controlador2.mostrarinfo(nick, email, pass, avatar, birthday);
             dialog.setScene(new Scene(root));
             dialog.showAndWait();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+            
     }
     
     @FXML

@@ -74,8 +74,8 @@ public class InicioController implements Initializable {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/Trabajo.fxml"));
         Parent root = loader.load();
         
-        //FXMLDocumentController controlador2= loader.getController();
-        //controlador2.initUser(res.getNickName(), res.getEmail(), res.getPassword(), res.getAvatar(), res.getBirthdate());
+        FXMLTrabajoController controlador2= loader.getController();
+        controlador2.initUser(nick, email, pass, avatar, birthday);
         Scene scene = new Scene(root,900,500);
         Stage stage = new Stage();
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));

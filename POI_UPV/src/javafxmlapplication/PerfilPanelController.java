@@ -2,11 +2,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
  */
-package poiupv;
+package javafxmlapplication;
 
 import java.io.File;
+import java.net.URL;
 import java.time.LocalDate;
+import java.util.ResourceBundle;
+import java.util.Set;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
@@ -15,18 +20,57 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.stage.Window;
+import model.NavDAOException;
+import model.Navigation;
+import model.User;
 
-public class PerfilPanelController {
+public class PerfilPanelController implements Initializable{
 
-    private ImageView ivAvatar;
-    @FXML private TextField tfUsuario;
-    @FXML private PasswordField pfContrasena;
-    @FXML private TextField tfEmail;
-    @FXML private DatePicker dpFechaNacimiento;
+    
+    @FXML 
+    private TextField tfUsuario;
+    @FXML 
+    private PasswordField pfContrasena;
+    @FXML 
+    private TextField tfEmail;
+    @FXML 
+    private DatePicker dpFechaNacimiento;
     @FXML
     private ImageView ivDialogIcon;
-
+    
+    private String nick;
+    private String email;
+    private String pass;
+    private Image avatar;
+    private LocalDate birthday;
+    
+    
+    
+    public void initUser(String u, String e,String p, Image a,LocalDate dt ){
+            nick = u;
+            email = e;
+            pass = p;
+            avatar = a;
+            birthday = dt;        
+        }
+    
+    public void mostrarinfo(String u,String e,String p, Image a,LocalDate dt){
+         tfUsuario.setText(nick);
+         pfContrasena.setText(pass);
+         tfEmail.setText(email);
+         ivDialogIcon.setImage(avatar);
+         dpFechaNacimiento.setValue(birthday);
+    }
+    
+    @Override
+     public void initialize(URL url, ResourceBundle rb){
+        
+        
+         
+     }
+     
     /** Abre el FileChooser para cambiar el avatar */
     @FXML
     void onChooseAvatar() {
@@ -35,42 +79,51 @@ public class PerfilPanelController {
         chooser.getExtensionFilters().add(
             new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg")
         );
-        Window win = ivAvatar.getScene().getWindow();
+        Window win = ivDialogIcon.getScene().getWindow();
         File f = chooser.showOpenDialog(win);
         if (f != null) {
-            ivAvatar.setImage(new Image(f.toURI().toString()));
+            ivDialogIcon.setImage(new Image(f.toURI().toString()));
         }
     }
 
     /** Guarda los cambios (aquí solo cierra el diálogo) */
     @FXML
-    void onGuardar() {
+    void onGuardar() throws NavDAOException {
+        Navigation nav = Navigation.getInstance();
+        User user = nav.authenticate(nick, pass);
         // Validaciones mínimas (si quieres):
         if (pfContrasena.getText().length() < 8) {
             showError("La contraseña debe tener al menos 8 caracteres.");
             return;
+        }else{
+            user.setPassword(pfContrasena.getText());
+            user.setEmail(tfEmail.getText());
+            user.setAvatar(ivDialogIcon.getImage());
+            user.setBirthdate(dpFechaNacimiento.getValue());
+            
+            
         }
         // …tú decides si validas email/fecha aquí…
         // Cerramos la ventana:
-        ivAvatar.getScene().getWindow().hide();
+        ivDialogIcon.getScene().getWindow().hide();
         showInfo("Cambios guardados (simulado).");
     }
 
     /** Cancela y cierra */
     @FXML
     void onCancelar() {
-        ivAvatar.getScene().getWindow().hide();
+        ivDialogIcon.getScene().getWindow().hide();
     }
 
     private void showError(String msg) {
         Alert a = new Alert(Alert.AlertType.ERROR, msg, ButtonType.OK);
-        a.initOwner(ivAvatar.getScene().getWindow());
+        a.initOwner(ivDialogIcon.getScene().getWindow());
         a.showAndWait();
     }
 
     private void showInfo(String msg) {
         Alert a = new Alert(Alert.AlertType.INFORMATION, msg, ButtonType.OK);
-        a.initOwner(ivAvatar.getScene().getWindow());
+        a.initOwner(ivDialogIcon.getScene().getWindow());
         a.showAndWait();
     }
 }

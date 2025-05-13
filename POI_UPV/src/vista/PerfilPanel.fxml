@@ -29,7 +29,7 @@
          <children>
             <ImageView fx:id="ivDialogIcon" fitHeight="75.0" fitWidth="73.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <image>
-                  <Image url="@../resources/usuario.png" />
+                  <Image url="@../resources/usuario.jpg" />
                </image>
                <GridPane.margin>
                   <Insets left="20.0" />
