@@ -1,96 +1,60 @@
 package poiupv;
+
 import javafx.geometry.Point2D;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- *
- * @author jose
- */
 public class Poi {
-    
     private String code;
     private String description;
-    
     private Point2D position;
 
-    /**
-     * Get the value of position
-     *
-     * @return the value of position
-     */
-    public Point2D getPosition() {
-        return position;
+    public Poi() {
+        // constructor por defecto
     }
 
-    /**
-     * Set the value of position
-     *
-     * @param position new value of position
-     */
-    public void setPosition(Point2D position) {
-        this.position = position;
-    }
-
-    /**
-     * Get the value of description
-     *
-     * @return the value of description
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Set the value of description
-     *
-     * @param description new value of description
-     */
-    public void setDescription(String description) {
+    public Poi(String code, String description, double x, double y) {
+        this.code = code;
         this.description = description;
+        this.position = new Point2D(x, y);
     }
 
+    // — Getters y setters generales —
 
-    /**
-     * Get the value of code
-     *
-     * @return the value of code
-     */
     public String getCode() {
         return code;
     }
 
-    /**
-     * Set the value of code
-     *
-     * @param code new value of code
-     */
     public void setCode(String code) {
         this.code = code;
     }
-    
-    
-    public Poi(String cod, String desc,double x, double y){
-        code=cod;
-        description=desc;
-        position= new Point2D(x,y);
-        
+
+    public String getDescription() {
+        return description;
     }
 
-    Poi() {
-         
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Point2D getPosition() {
+        return position;
+    }
+
+    public void setPosition(Point2D position) {
+        this.position = position;
+    }
+
+    // — Nuevos getters para X/Y —
+
+    public double getX() {
+        return position != null ? position.getX() : 0;
+    }
+
+    public double getY() {
+        return position != null ? position.getY() : 0;
     }
 
     @Override
     public String toString() {
-        return  code + ", " + description ;
+        return code + " – " + description;
     }
-    
 }
-
-    
-

@@ -3,93 +3,129 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package javafxmlapplication;
+package poiupv;
 
-import poiupv.*;
+import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import javafx.animation.Timeline;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ColorPicker;
-import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Menu;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Arc;
+import javafx.scene.shape.ArcType;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Shape;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import model.NavDAOException;
-import model.Navigation;
-import model.User;
-import poiupv.Poi;
-import poiupv.Poi;
-import poiupv.Poi;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
+import javafx.scene.input.MouseEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
+import javafx.fxml.FXML;
+import javafx.scene.input.MouseEvent;
+import javafx.geometry.Pos;
+import javafx.scene.layout.Region;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.geometry.Point2D;
+import javafx.scene.control.Menu;
+import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.paint.Color;
 
-/**
- *
- * @author jsoler
- */
 
-//CLASE CONTROLADORA DE FXMLDOCUMENT.FXML
 public class FXMLDocumentController implements Initializable {
 
-    //=======================================
-    // hashmap para guardar los puntos de interes POI
-    private final HashMap<String, Poi> hm = new HashMap<>();
+    // — Datos y Zoom —
+    private final HashMap<String,Poi> hm = new HashMap<>();
     private ObservableList<Poi> data;
-    // ======================================
-    // la variable zoomGroup se utiliza para dar soporte al zoom
-    // el escalado se realiza sobre este nodo, al escalar el Group no mueve sus nodos
     private Group zoomGroup;
+    private String pendingText = null; 
 
-    @FXML
-    private ListView<Poi> map_listview;
-    @FXML
-    private ScrollPane map_scrollpane;
-    @FXML
-    private Slider zoom_slider;
-    @FXML
-    private MenuButton map_pin;
-    @FXML
-    private MenuItem pin_info;
-    @FXML
-    private Label mousePosition;
+    @FXML private ListView<Poi> map_listview;
+    @FXML private ScrollPane  map_scrollpane;
+    @FXML private Slider      zoom_slider;
+    @FXML private Pane        paneCarta;
+    @FXML private MenuButton  mbPerfil;
+    @FXML private MenuItem    miEditarPerfil;
+    @FXML private MenuItem    menuItemEliminarMarcaTool;
+    @FXML private MenuItem    menuItemLimpiarCartaTool;
+
+    // — ColorPickers y controles —
+    @FXML private ColorPicker colorPickkerPunto;
+    @FXML private ColorPicker colorPickerLinea;
+    @FXML private ColorPicker colorPickerArco;
+    @FXML private TextField   textFieldRadioArco;
+    @FXML private TextField   textFieldTamanoTexto;
+    @FXML private ColorPicker colorPickerTexto;
+    @FXML private ColorPicker colorPickerEdicion;
+
+    // — Línea menú items —
+    @FXML private MenuItem menuItemIniciarLinea;
+    @FXML private MenuItem menuItemGrosorLineaMuyGrueso;
+    @FXML private MenuItem menuItemGrosorLineaGrueso;
+    @FXML private MenuItem menuItemGrosorLineaMedio;
+    @FXML private MenuItem menuItemGrosorLineaFino;
+    
+    // Transportador
+@FXML private MenuItem menuItemTransportador;
+
+// Preview dinámico de la línea mientras arrastras
+private Group   previewLineGroup;
+private EventHandler<MouseEvent> lineDragHandler;
     @FXML
     private Menu menuMarcarPunto;
     @FXML
     private MenuItem menuItemIniciarPunto;
+    @FXML
+    private MenuButton mbMarcarPunto;
     @FXML
     private MenuItem menuItemMarcaCirculo;
     @FXML
@@ -99,21 +135,9 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private MenuItem menuItemMarcaEstrella;
     @FXML
-    private ColorPicker colorPickkerPunto;
-    @FXML
     private Menu menuTrazarLinea;
     @FXML
-    private MenuItem menuItemIniciarLinea;
-    @FXML
-    private MenuItem menuItemGrosorLineaMuyGrueso;
-    @FXML
-    private MenuItem menuItemGrosorLineaGrueso;
-    @FXML
-    private MenuItem menuItemGrosorLineaMedio;
-    @FXML
-    private MenuItem menuItemGrosorLineaFino;
-    @FXML
-    private ColorPicker colorPickerLinea;
+    private MenuItem menuGrosorLinea;
     @FXML
     private Menu menuTrazarArco;
     @FXML
@@ -127,315 +151,737 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private MenuItem menuItemGrosorArcoFino;
     @FXML
-    private ColorPicker colorPickerArco;
-    @FXML
     private MenuItem menuItemRadioLibre;
     @FXML
-    private Slider sliderRadioArco;
-    @FXML
     private MenuItem menuItemRadioFijo;
-    @FXML
-    private TextField textFieldRadioArco;
     @FXML
     private Menu menuAnotarTexto;
     @FXML
     private MenuItem menuItemAnotarTexto;
     @FXML
-    private TextField textFieldTamanoTexto;
-    @FXML
-    private ColorPicker colorPickerTexto;
-    @FXML
     private Menu menuColor;
     @FXML
-    private CustomMenuItem menuItemEditarColor;
-    @FXML
-    private ColorPicker colorPickerEdicion;
+    private MenuItem menuItemEditarColor;
     @FXML
     private Menu menuEliminarMarca;
     @FXML
-    private MenuItem menuItemEliminarMarcaTool;
-    @FXML
     private Menu menuLimpiarCarta;
     @FXML
-    private MenuItem menuItemLimpiarCartaTool;
+    private ImageView ivTransportador;
     @FXML
     private MenuItem menuItemCompas;
-    @FXML
-    private MenuItem menuItemTransportador;
     @FXML
     private MenuItem menuItemRegla;
     @FXML
     private Menu menuPerfil;
     @FXML
-    private Button btnPerfil;
-    @FXML
     private ImageView ivPerfil;
     @FXML
-    private Pane paneCarta;
-
-    private String nick;
-    private String email;
-    private String pass;
-    private Image avatar;
-    private LocalDate birthday;
-    
+    private MenuButton map_pin;
     @FXML
-    void zoomIn(ActionEvent event) {
-        //================================================
-        // el incremento del zoom dependerá de los parametros del 
-        // slider y del resultado esperado
-        double sliderVal = zoom_slider.getValue();
-        zoom_slider.setValue(sliderVal += 0.1);
-        
-    }
+    private MenuItem pin_info;
 
-    @FXML
-    void zoomOut(ActionEvent event) {
-        double sliderVal = zoom_slider.getValue();
-        zoom_slider.setValue(sliderVal + -0.1);
-    }
-    
-    // esta funcion es invocada al cambiar el value del slider zoom_slider
-    private void zoom(double scaleValue) {
-        //===================================================
-        //guardamos los valores del scroll antes del escalado
-        double scrollH = map_scrollpane.getHvalue();
-        double scrollV = map_scrollpane.getVvalue();
-        //===================================================
-        // escalamos el zoomGroup en X e Y con el valor de entrada
-        zoomGroup.setScaleX(scaleValue);
-        zoomGroup.setScaleY(scaleValue);
-        //===================================================
-        // recuperamos el valor del scroll antes del escalado
-        map_scrollpane.setHvalue(scrollH);
-        map_scrollpane.setVvalue(scrollV);
-    }
+    // — Estado global —
+    private enum Tool { NONE, POINT, LINE, ARC, TEXT, EDIT_COLOR, DELETE, COMPASS, RULER, PROTRACTOR }
+    private Tool currentTool      = Tool.NONE;
+    private boolean markingEnabled = false;
 
-    @FXML
-    void listClicked(MouseEvent event) {
-        Poi itemSelected = map_listview.getSelectionModel().getSelectedItem();
+    // — Punto —
+    private Color  colorSeleccionado = Color.RED;
+    private String tipoPunto         = "circulo";
 
-        // Animación del scroll hasta la mousePosistion del item seleccionado
-        double mapWidth = zoomGroup.getBoundsInLocal().getWidth();
-        double mapHeight = zoomGroup.getBoundsInLocal().getHeight();
-        double scrollH = itemSelected.getPosition().getX() / mapWidth;
-        double scrollV = itemSelected.getPosition().getY() / mapHeight;
-        final Timeline timeline = new Timeline();
-        final KeyValue kv1 = new KeyValue(map_scrollpane.hvalueProperty(), scrollH);
-        final KeyValue kv2 = new KeyValue(map_scrollpane.vvalueProperty(), scrollV);
-        final KeyFrame kf = new KeyFrame(Duration.millis(500), kv1, kv2);
-        timeline.getKeyFrames().add(kf);
-        timeline.play();
+    // — Línea —
+     private boolean lineStarted = false;
+    private double  lineStartX, lineStartY;
+    private Color   colorLinea   = Color.RED;
+    private double  grosorLinea  = 4;      // ← grosor “grueso” por defecto
 
-        // movemos el objto map_pin hasta la mousePosistion del POI
-//        double pinW = map_pin.getBoundsInLocal().getWidth();
-//        double pinH = map_pin.getBoundsInLocal().getHeight();
-        map_pin.setLayoutX(itemSelected.getPosition().getX());
-        map_pin.setLayoutY(itemSelected.getPosition().getY());
-        pin_info.setText(itemSelected.getDescription());
-        map_pin.setVisible(true);
-    }
+    // — Arco —
+    private boolean arcStarted   = false;
+    private double  arcCenterX, arcCenterY;
+    private Color   colorArco    = Color.RED;
+    private double  grosorArco   = 4; 
+    private double  radioFijo    = 30;
 
-    private void initData() {
-        data=map_listview.getItems();
-        data.add(new Poi("1F", "Edificion del DSIC", 275, 250));
-        data.add( new Poi("Agora", "Agora", 575, 350));
-        data.add( new Poi("Pista", "Pista de atletismo y campo de futbol", 950, 350));
-        System.out.println("Cambio realizado");
-    }
-    
-    public void initUser(String u, String e,String p, Image a,LocalDate dt ){
-            nick = u;
-            email = e;
-            pass = p;
-            avatar = a;
-            birthday = dt;        
-        }
+    // — Texto —
+    private double tamanoTexto = 12;
+    private Color  colorTexto  = Color.RED;
+    private String textoPendiente;   
+
+    // — Edición Color —
+    private Color colorEdicion = Color.BLACK;
+
+    // — Compás, Regla, Transportador —
+    private Point2D compasP1, compasP2;
+    private Point2D rulerP1, rulerP2;
+    private Circle   protractorNode;
+    private ImageView ivOverlay;
+private Group previewArcGroup;
+private EventHandler<MouseEvent> arcDragHandler;
+private Arc previewArc;
+private enum ModoArco { RADIO_FIJO, RADIO_LIBRE }
+private ModoArco modoArco = ModoArco.RADIO_FIJO;
+
 
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        initData();
-        //==========================================================
-        // inicializamos el slider y enlazamos con el zoom
-        zoom_slider.setMin(0.05);
+public void initialize(URL url, ResourceBundle rb) {
+    // 1) Tu setup original
+    initData();
+    setupZoom();
+    setupControls();
+    setupPaneClickHandler();
+
+    // 2) Grosor por defecto para línea y arco
+    seleccionarGrosorGrueso(null);
+    seleccionarGrosorArcoGrueso(null);
+
+    // 3) Inicializar valores de los sliders y campos de texto
+    textFieldRadioArco.setText(String.format("%.0f", radioFijo));
+    textFieldTamanoTexto.setText(String.format("%.0f", tamanoTexto));
+
+    // ── Aquí arranca la parte nueva para el transportador ──
+
+    // 4) Carga cruda del PNG desde recursos
+    Image raw = new Image(getClass()
+        .getResourceAsStream("/resources/transportador.png"));
+
+    // 5) Reprocesa para que SOLO las líneas y números queden opacos,
+    //    y el fondo totalmente transparente
+    Image overlay = makeOverlayPreserveGray(raw);
+
+    // 6) Crea el ImageView con la imagen reprocesada
+    ivOverlay = new ImageView(overlay);
+    ivOverlay.setMouseTransparent(true); // deja pasar los eventos al pane
+    ivOverlay.setVisible(false);         // arranca oculto
+
+    // 7) Añádelo al Pane justo antes de tus trazos (capa intermedia)
+    paneCarta.getChildren().add(ivOverlay);
+
+    // ── Ahora habilitamos arrastre igual que con los textos ──
+
+    // Clase interna para guardar desplazamiento
+    class Delta { double x, y; }
+    final Delta dragDelta = new Delta();
+
+    // 8) Calcular offset al presionar
+    ivOverlay.setOnMousePressed(e -> {
+        Point2D mouse = paneCarta.sceneToLocal(e.getSceneX(), e.getSceneY());
+        dragDelta.x = mouse.getX() - ivOverlay.getLayoutX();
+        dragDelta.y = mouse.getY() - ivOverlay.getLayoutY();
+        e.consume();
+    });
+
+    // 9) Mover mientras arrastras
+    ivOverlay.setOnMouseDragged(e -> {
+        Point2D mouse = paneCarta.sceneToLocal(e.getSceneX(), e.getSceneY());
+        ivOverlay.setLayoutX(mouse.getX() - dragDelta.x);
+        ivOverlay.setLayoutY(mouse.getY() - dragDelta.y);
+        e.consume();
+    });
+
+    // 10) Fijar posición al soltar y salir de modo transportador
+    ivOverlay.setOnMouseReleased(e -> {
+        resetModes();
+        markingEnabled = false;
+        currentTool    = Tool.NONE;
+        e.consume();
+    });
+    // ────────────────────────────────────────────────────────────
+}
+
+    private void initData() {
+        data = map_listview.getItems();
+        data.add(new Poi("1F",    "Edificio DSIC",       275, 250));
+        data.add(new Poi("Agora", "Ágora",               575, 350));
+        data.add(new Poi("Pista", "Atletismo y fútbol", 950, 350));
+    }
+
+    private void setupZoom() {
+        zoom_slider.setMin(0.5);
         zoom_slider.setMax(1.5);
-        zoom_slider.setValue(0.5);
-        zoom_slider.valueProperty().addListener((o, oldVal, newVal) -> zoom((Double) newVal));
-
-        //=========================================================================
-        //Envuelva el contenido de scrollpane en un grupo para que 
-        //ScrollPane vuelva a calcular las barras de desplazamiento tras el escalado
-        Group contentGroup = new Group();
+        zoom_slider.setValue(1.0);
+        zoom_slider.valueProperty().addListener((o,ov,nv)->zoom(nv.doubleValue()));
+        Group content = new Group();
         zoomGroup = new Group();
-        contentGroup.getChildren().add(zoomGroup);
+        content.getChildren().add(zoomGroup);
         zoomGroup.getChildren().add(map_scrollpane.getContent());
-        map_scrollpane.setContent(contentGroup);
-        
+        map_scrollpane.setContent(content);
+    }
+
+    private void setupControls() {
+    // Asignación de colores desde los color pickers
+    colorPickkerPunto.setOnAction(e -> colorSeleccionado = colorPickkerPunto.getValue());
+    colorPickerLinea .setOnAction(e -> colorLinea        = colorPickerLinea.getValue());
+    colorPickerArco  .setOnAction(e -> colorArco         = colorPickerArco.getValue());
+    colorPickerTexto .setOnAction(e -> colorTexto        = colorPickerTexto.getValue());
+    colorPickerEdicion.setOnAction(e -> colorEdicion     = colorPickerEdicion.getValue());
+
+    // TextField para el tamaño del texto
+    textFieldTamanoTexto.setOnAction(e -> {
         try {
-            Navigation nav = Navigation.getInstance();
-            User res = nav.authenticate(nick, pass);
-            ivPerfil.setImage(res.getAvatar());
-        } catch (NavDAOException ex) {}
-        
-        
+            tamanoTexto = Double.parseDouble(textFieldTamanoTexto.getText());
+        } catch (NumberFormatException ex) {
+            textFieldTamanoTexto.setText(String.format("%.0f", tamanoTexto));
+        }
+    });
 
-    }
+    // TextField para el radio fijo del arco
+    textFieldRadioArco.setOnAction(e -> {
+        try {
+            radioFijo = Double.parseDouble(textFieldRadioArco.getText());
+        } catch (NumberFormatException ex) {
+            textFieldRadioArco.setText(String.format("%.0f", radioFijo));
+        }
+    });
+}
 
-    @FXML
-    private void showPosition(MouseEvent event) {
-        mousePosition.setText("sceneX: " + (int) event.getSceneX() + ", sceneY: " + (int) event.getSceneY() + "\n"
-                + "         X: " + (int) event.getX() + ",          Y: " + (int) event.getY());
-    }
 
-    private void closeApp(ActionEvent event) {
-        ((Stage) zoom_slider.getScene().getWindow()).close();
-    }
+    private void setupPaneClickHandler() {
+    paneCarta.setOnMouseClicked(evt -> {
+        // Clic derecho cancela la herramienta
+        if (evt.getButton() == MouseButton.SECONDARY) {
+            resetModes();
+            return;
+        }
+        // Si no estamos en modo marcado, nada que hacer
+        if (!markingEnabled) return;
 
-    @FXML
-    private void about(ActionEvent event) {
-        Alert mensaje = new Alert(Alert.AlertType.INFORMATION);
-        // Acceder al Stage del Dialog y cambiar el icono
-        Stage dialogStage = (Stage) mensaje.getDialogPane().getScene().getWindow();
-        dialogStage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
-        mensaje.setTitle("Acerca de");
-        mensaje.setHeaderText("IPC - 2025");
-        mensaje.showAndWait();
-    }
+        double x = evt.getX(), y = evt.getY();
+        switch (currentTool) {
+            case POINT -> drawPoint(x, y);
+            case LINE -> handleLineClick(evt);
+            case ARC -> handleArcClick(evt);
+            case TEXT  -> handleTextClick(x, y);
 
-    @FXML
-    private void addPoi(MouseEvent event) {
+            case EDIT_COLOR -> {
+                Node n = (Node) evt.getTarget();
+                if (n != paneCarta) applyColor(n, colorEdicion);
+                resetModes();
+            }
 
-        if (event.isControlDown()) {
-            Dialog<Poi> poiDialog = new Dialog<>();
-            poiDialog.setTitle("Nuevo POI");
-            poiDialog.setHeaderText("Introduce un nuevo POI");
-            // Acceder al Stage del Dialog y cambiar el icono
-            Stage dialogStage = (Stage) poiDialog.getDialogPane().getScene().getWindow();
-            dialogStage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
-
-            ButtonType okButton = new ButtonType("Aceptar", ButtonBar.ButtonData.OK_DONE);
-            poiDialog.getDialogPane().getButtonTypes().addAll(okButton, ButtonType.CANCEL);
-
-            TextField nameField = new TextField();
-            nameField.setPromptText("Nombre del POI");
-
-            TextArea descArea = new TextArea();
-            descArea.setPromptText("Descripción...");
-            descArea.setWrapText(true);
-            descArea.setPrefRowCount(5);
-
-            VBox vbox = new VBox(10, new Label("Nombre:"), nameField, new Label("Descripción:"), descArea);
-            poiDialog.getDialogPane().setContent(vbox);
-
-            poiDialog.setResultConverter(dialogButton -> {
-                if (dialogButton == okButton) {
-                    return new Poi(nameField.getText().trim(), descArea.getText().trim(), 0, 0);
+            case DELETE -> {
+                Node n = (Node) evt.getTarget();
+                if (n instanceof Shape || n instanceof Text) {
+                    if (n.getParent() instanceof Group) {
+                        paneCarta.getChildren().remove(n.getParent());
+                    } else {
+                        paneCarta.getChildren().remove(n);
+                    }
                 }
-                return null;
-            });
-            Optional<Poi> result = poiDialog.showAndWait();
+                resetModes();
+            }
 
-            if(result.isPresent()) {
-                Point2D localPoint = zoomGroup.sceneToLocal(event.getSceneX(), event.getSceneY());
-                Poi poi=result.get();
-                poi.setPosition(localPoint);
-                map_listview.getItems().add(poi);
+            case COMPASS -> measureCompass(x, y);
+            case RULER   -> measureRuler(x, y);
+
+            case PROTRACTOR -> {
+                // Reposiciona el overlay y lo hace visible
+                ivOverlay.setLayoutX(x - ivOverlay.getImage().getWidth()  / 2);
+                ivOverlay.setLayoutY(y - ivOverlay.getImage().getHeight() / 2);
+                ivOverlay.setVisible(true);
+                // No resetModes() para que puedas reposicionarlo tantas veces como quieras
+            }
+
+            default -> { }
+        }
+    });
+}
+    // ─── Draw helpers ────────────────────────────────────────────────────────────
+
+    private void drawCross(double x, double y, Color c) {
+        Line h = new Line(x-5, y, x+5, y);
+        Line v = new Line(x, y-5, x, y+5);
+        h.setStroke(c); v.setStroke(c);
+        paneCarta.getChildren().addAll(h, v);
+    }
+
+    private void drawPoint(double x, double y) {
+        switch (tipoPunto) {
+            case "estrella"  -> { Text t = new Text(x-6, y+6, "★"); t.setFill(colorSeleccionado); paneCarta.getChildren().add(t); }
+            case "asterisco" -> { Text t = new Text(x-4, y+6, "*"); t.setFill(colorSeleccionado); paneCarta.getChildren().add(t); }
+            case "cruz"      -> { Text t = new Text(x-4, y+6, "+"); t.setFill(colorSeleccionado); paneCarta.getChildren().add(t); }
+            default          -> { Circle c = new Circle(x, y, 5); c.setFill(colorSeleccionado); paneCarta.getChildren().add(c); }
+        }
+    }
+
+    private void handleLineClick(MouseEvent evt) {
+    double x = evt.getX(), y = evt.getY();
+    if (!lineStarted) {
+        // 1) Primer clic: guardo origen y creo el Group de preview
+        lineStartX = x;
+        lineStartY = y;
+        lineStarted = true;
+
+        // Línea inicial (cero longitud)
+        Line line = new Line(lineStartX, lineStartY, x, y);
+        line.setStroke(colorLinea);
+        line.setStrokeWidth(grosorLinea);
+
+        // Cruces en el punto inicial
+        Line h1 = new Line(lineStartX-5, lineStartY, lineStartX+5, lineStartY);
+        Line v1 = new Line(lineStartX, lineStartY-5, lineStartX, lineStartY+5);
+        h1.setStroke(colorLinea);
+        v1.setStroke(colorLinea);
+
+        // Cruces en el extremo (empiezan en el mismo punto)
+        Line h2 = new Line(x-5, y, x+5, y);
+        Line v2 = new Line(x, y-5, x, y+5);
+        h2.setStroke(colorLinea);
+        v2.setStroke(colorLinea);
+
+        previewLineGroup = new Group(line, h1, v1, h2, v2);
+        paneCarta.getChildren().add(previewLineGroup);
+
+        // 2) Defino el handler de movimiento para actualizar la preview
+        lineDragHandler = moveEvt -> {
+            double ex = moveEvt.getX(), ey = moveEvt.getY();
+            // actualizo línea
+            line.setEndX(ex);
+            line.setEndY(ey);
+            // actualizo cruces final
+            h2.setStartX(ex-5); h2.setStartY(ey);
+            h2.setEndX(ex+5);   h2.setEndY(ey);
+            v2.setStartX(ex);   v2.setStartY(ey-5);
+            v2.setEndX(ex);     v2.setEndY(ey+5);
+        };
+        paneCarta.addEventFilter(MouseEvent.MOUSE_MOVED, lineDragHandler);
+
+    } else {
+        // 3) Segundo clic: quito el handler y finalizo el Group
+        paneCarta.removeEventFilter(MouseEvent.MOUSE_MOVED, lineDragHandler);
+        lineStarted = false;
+        resetModes();
+    }
+}
+
+    private void handleArcClick(MouseEvent evt) {
+    double x = evt.getX(), y = evt.getY();
+
+    if (modoArco == ModoArco.RADIO_FIJO) {
+        if (!arcStarted) {
+            arcCenterX = x;
+            arcCenterY = y;
+            arcStarted = true;
+        } else {
+            Arc arc = new Arc(arcCenterX, arcCenterY, radioFijo, radioFijo, 0, 180);
+            arc.setType(ArcType.OPEN);
+            arc.setStroke(colorArco);
+            arc.setStrokeWidth(grosorArco);
+            arc.setFill(Color.TRANSPARENT);
+
+            // Cruces en extremos del arco
+            Line h1 = new Line(arcCenterX + radioFijo - 5, arcCenterY, arcCenterX + radioFijo + 5, arcCenterY);
+            Line v1 = new Line(arcCenterX + radioFijo, arcCenterY - 5, arcCenterX + radioFijo, arcCenterY + 5);
+            Line h2 = new Line(arcCenterX - radioFijo - 5, arcCenterY, arcCenterX - radioFijo + 5, arcCenterY);
+            Line v2 = new Line(arcCenterX - radioFijo, arcCenterY - 5, arcCenterX - radioFijo, arcCenterY + 5);
+
+            for (Line cruz : List.of(h1, v1, h2, v2)) {
+                cruz.setStroke(colorArco);
+            }
+
+            Group g = new Group(arc, h1, v1, h2, v2);
+            paneCarta.getChildren().add(g);
+
+            arcStarted = false;
+            resetModes();
+        }
+
+    } else if (modoArco == ModoArco.RADIO_LIBRE) {
+        handleArcLibre(evt); // comportamiento dinámico
+    }
+}
+    
+
+    private void measureCompass(double x, double y) {
+        if (compasP1 == null) {
+            compasP1 = new Point2D(x, y);
+        } else {
+            compasP2 = new Point2D(x, y);
+            double d = compasP1.distance(compasP2);
+            Line l = new Line(compasP1.getX(), compasP1.getY(), compasP2.getX(), compasP2.getY());
+            paneCarta.getChildren().add(l);
+            Text t = new Text((compasP1.getX()+compasP2.getX())/2, (compasP1.getY()+compasP2.getY())/2, String.format("%.1f", d));
+            makeDraggable(t);
+            paneCarta.getChildren().add(t);
+            compasP1 = compasP2 = null;
+        }
+    }
+
+    private void measureRuler(double x, double y) {
+        if (rulerP1 == null) {
+            rulerP1 = new Point2D(x, y);
+        } else {
+            rulerP2 = new Point2D(x, y);
+            double d = rulerP1.distance(rulerP2);
+            Text t = new Text(rulerP2.getX(), rulerP2.getY(), String.format("Dist: %.1f", d));
+            makeDraggable(t);
+            paneCarta.getChildren().add(t);
+            rulerP1 = rulerP2 = null;
+        }
+    }
+
+    private void applyColor(Node n, Color c) {
+    // Si el nodo pertenece a un Group, recoloreamos TODOS sus hijos
+    if (n.getParent() instanceof Group) {
+        Group grupo = (Group) n.getParent();
+        for (Node hijo : grupo.getChildren()) {
+            if (hijo instanceof Shape) {
+                ((Shape)hijo).setStroke(c);
+            } else if (hijo instanceof Text) {
+                ((Text)hijo).setFill(c);
+            }
+        }
+    } else {
+        // Caso aislado: un Shape o Text suelto
+        if (n instanceof Shape) {
+            ((Shape)n).setStroke(c);
+        } else if (n instanceof Text) {
+            ((Text)n).setFill(c);
+        }
+    }
+}
+    
+    private void handleArcLibre(MouseEvent evt) {
+    double x = evt.getX(), y = evt.getY();
+
+    if (!arcStarted) {
+        arcCenterX = x;
+        arcCenterY = y;
+        arcStarted = true;
+
+        previewArc = new Arc(arcCenterX, arcCenterY, 1, 1, 0, 180);
+        previewArc.setType(ArcType.OPEN);
+        previewArc.setStroke(colorArco);
+        previewArc.setStrokeWidth(grosorArco);
+        previewArc.setFill(Color.TRANSPARENT);
+
+        Line h1 = new Line(), v1 = new Line();
+        Line h2 = new Line(), v2 = new Line();
+        for (Line l : List.of(h1, v1, h2, v2)) l.setStroke(colorArco);
+
+        previewArcGroup = new Group(previewArc, h1, v1, h2, v2);
+        paneCarta.getChildren().add(previewArcGroup);
+
+        arcDragHandler = moveEvt -> {
+            double ex = moveEvt.getX(), ey = moveEvt.getY();
+            double r = Math.hypot(ex - arcCenterX, ey - arcCenterY);
+            previewArc.setRadiusX(r);
+            previewArc.setRadiusY(r);
+
+            double rightX = arcCenterX + r;
+            double leftX  = arcCenterX - r;
+            double y0 = arcCenterY;
+
+            h1.setStartX(rightX - 5); h1.setEndX(rightX + 5);
+            h1.setStartY(y0);         h1.setEndY(y0);
+            v1.setStartX(rightX);     v1.setEndX(rightX);
+            v1.setStartY(y0 - 5);     v1.setEndY(y0 + 5);
+
+            h2.setStartX(leftX - 5);  h2.setEndX(leftX + 5);
+            h2.setStartY(y0);         h2.setEndY(y0);
+            v2.setStartX(leftX);      v2.setEndX(leftX);
+            v2.setStartY(y0 - 5);     v2.setEndY(y0 + 5);
+        };
+
+        paneCarta.addEventFilter(MouseEvent.MOUSE_MOVED, arcDragHandler);
+
+    } else {
+        paneCarta.removeEventFilter(MouseEvent.MOUSE_MOVED, arcDragHandler);
+        arcStarted = false;
+        previewArc = null;
+        previewArcGroup = null;
+        resetModes();
+    }
+}
+
+    private void makeDraggable(Text txt) {
+        final double[] d = new double[2];
+        txt.setOnMousePressed(e -> {
+            Point2D loc = paneCarta.sceneToLocal(e.getSceneX(), e.getSceneY());
+            d[0] = loc.getX() - txt.getX();
+            d[1] = loc.getY() - txt.getY();
+            e.consume();
+        });
+        txt.setOnMouseDragged(e -> {
+            Point2D loc = paneCarta.sceneToLocal(e.getSceneX(), e.getSceneY());
+            txt.setX(loc.getX() - d[0]);
+            txt.setY(loc.getY() - d[1]);
+            e.consume();
+        });
+    }
+    
+    private Image makeOverlayPreserveGray(Image src) {
+    int w = (int) src.getWidth();
+    int h = (int) src.getHeight();
+    WritableImage dst = new WritableImage(w, h);
+    PixelReader  pr = src.getPixelReader();
+    PixelWriter  pw = dst.getPixelWriter();
+
+    for (int y = 0; y < h; y++) {
+        for (int x = 0; x < w; x++) {
+            Color c = pr.getColor(x, y);
+            // si es un píxel muy claro (cercano al blanco), lo tratamos como fondo
+            if (c.getOpacity() > 0.02 && c.getBrightness() < 0.95) {
+                // línea o número: dejamos su color original, pero forzamos alpha=1
+                pw.setColor(x, y,
+                    new Color(c.getRed(), c.getGreen(), c.getBlue(), 1.0));
+            } else {
+                // fondo: transparente
+                pw.setColor(x, y, Color.TRANSPARENT);
             }
         }
     }
+    return dst;
+}
+    
+    private void handleTextClick(double x, double y) {
+    if (textoPendiente != null) {    // ← aquí también
+        Text txt = new Text(x, y, textoPendiente);
+        txt.setFill(colorTexto);
+        txt.setStyle("-fx-font-size:" + tamanoTexto + "px");
+        makeDraggable(txt);
+        paneCarta.getChildren().add(txt);
+        textoPendiente = null;       // ← limpia para la próxima vez
+    }
+    resetModes();
+}// ─── OnAction handlers ─────────────────────────────────────────────────────
 
-    @FXML
-    private void seleccionarHerramientaMarcarPunto(ActionEvent event) {
+    @FXML public void seleccionarHerramientaMarcarPunto(ActionEvent e) {
+        resetModes(); markingEnabled = true; currentTool = Tool.POINT;
     }
 
     @FXML
-    private void seleccionarMarcaCirculo(ActionEvent event) {
-    }
+public void seleccionarTrazarLinea(ActionEvent e) {
+    resetModes();
+    markingEnabled = true;
+    currentTool    = Tool.LINE;
+}
+ @FXML public void seleccionarGrosorMuyGrueso(ActionEvent e) { grosorLinea = 6; }
+@FXML public void seleccionarGrosorGrueso    (ActionEvent e) { grosorLinea = 4; }
+@FXML public void seleccionarGrosorMedio     (ActionEvent e) { grosorLinea = 2; }
+@FXML public void seleccionarGrosorFino      (ActionEvent e) { grosorLinea = 1; }
 
     @FXML
-    private void seleccionarMarcaCruz(ActionEvent event) {
-    }
+public void seleccionarTrazarArco(ActionEvent e) {
+    resetModes();
+    markingEnabled = true;
+    currentTool    = Tool.ARC;
+}
+    @FXML public void seleccionarGrosorArcoMuyGrueso(ActionEvent e) { grosorArco = 6; }
+    @FXML public void seleccionarGrosorArcoGrueso   (ActionEvent e) { grosorArco = 4; }
+    @FXML public void seleccionarGrosorArcoMedio    (ActionEvent e) { grosorArco = 2; }
+    @FXML public void seleccionarGrosorArcoFino     (ActionEvent e) { grosorArco = 1; }
 
+    
+    @FXML private Label mousePosition;
+    
     @FXML
-    private void seleccionarMarcaAsterisco(ActionEvent event) {
+    private void showPosition(MouseEvent e) {
+        mousePosition.setText(
+            "sceneX: " + (int)e.getSceneX() +
+            ", sceneY: " + (int)e.getSceneY() +
+            "\nX: " + (int)e.getX() +
+            ", Y: " + (int)e.getY()
+        );
     }
 
+    @FXML public void onMenuColorPicked(ActionEvent e) {
+    // Preparo el modo edición de color
+    resetModes();
+    markingEnabled = true;
+    currentTool    = Tool.EDIT_COLOR;
+    // Muestro el popup del ColorPicker que ya está en el menú
+    colorPickerEdicion.show();
+}
+
+    @FXML public void seleccionarEliminarElemento(ActionEvent e) {
+        resetModes(); markingEnabled = true; currentTool = Tool.DELETE;
+    }
+
+    @FXML public void seleccionarLimpiarCarta(ActionEvent e) {
+    paneCarta.getChildren().removeIf(n ->
+        n instanceof Shape ||
+        n instanceof Text  ||
+        n instanceof Group
+    );
+    resetModes();
+}
+
+    @FXML public void seleccionarCompas(ActionEvent e) {
+        resetModes(); markingEnabled = true; currentTool = Tool.COMPASS;
+    }
+    @FXML public void seleccionarRegla(ActionEvent e) {
+        resetModes(); markingEnabled = true; currentTool = Tool.RULER;
+    }
     @FXML
-    private void seleccionarMarcaEstrella(ActionEvent event) {
+public void seleccionarTransportador(ActionEvent e) {
+    resetModes();
+    markingEnabled = true;
+    currentTool    = Tool.PROTRACTOR;
+    ivOverlay.setVisible(true);
+}
+    @FXML public void onEditarPerfil(ActionEvent e) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("PerfilPanel.fxml"));
+            Parent root = loader.load();
+            Stage dialog = new Stage();
+            dialog.setTitle("Editar perfil");
+            dialog.initOwner(paneCarta.getScene().getWindow());
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.setScene(new Scene(root));
+            dialog.showAndWait();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
-
+    
     @FXML
-    private void seleccionarTrazarLinea(ActionEvent event) {
-    }
+public void seleccionarAnotarTexto(ActionEvent e) {
+    TextInputDialog dlg = new TextInputDialog();
+    dlg.setTitle("Anotar texto");
+    dlg.setHeaderText("Introduce el texto:");
+    dlg.getEditor().setPromptText("Tu texto aquí");
 
+    Optional<String> res = dlg.showAndWait();
+    res.ifPresent(s -> {
+        textoPendiente  = s;          // ← asignamos al nuevo campo
+        resetModes();
+        markingEnabled  = true;
+        currentTool     = Tool.TEXT;
+    });
+}
+    
     @FXML
-    private void seleccionarGrosorMuyGrueso(ActionEvent event) {
-    }
+private void listClicked(MouseEvent e) {
+    // Obtenemos el POI seleccionado
+    Poi poi = map_listview.getSelectionModel().getSelectedItem();
+    if (poi == null) return;
 
+    // Calculamos la posición normalizada para centrar el ScrollPane
+    double contentWidth  = zoomGroup.getBoundsInLocal().getWidth() * zoom_slider.getValue();
+    double contentHeight = zoomGroup.getBoundsInLocal().getHeight() * zoom_slider.getValue();
+    double viewportW     = map_scrollpane.getViewportBounds().getWidth();
+    double viewportH     = map_scrollpane.getViewportBounds().getHeight();
+
+    double h = (poi.getX() * zoom_slider.getValue() - viewportW  / 2) / (contentWidth  - viewportW);
+    double v = (poi.getY() * zoom_slider.getValue() - viewportH  / 2) / (contentHeight - viewportH);
+
+    // Clampeamos entre 0 y 1
+    h = Math.max(0, Math.min(1, h));
+    v = Math.max(0, Math.min(1, v));
+
+    map_scrollpane.setHvalue(h);
+    map_scrollpane.setVvalue(v);
+}
+    
     @FXML
-    private void seleccionarGrosorGrueso(ActionEvent event) {
+private void addPoi(MouseEvent e) {
+    // Solo respondemos a Ctrl+clic
+    if (!e.isControlDown()) return;
+
+    // Creamos un diálogo para introducir un nuevo POI
+    Dialog<Poi> dlg = new Dialog<>();
+    dlg.setTitle("Nuevo POI");
+    dlg.setHeaderText("Introduce un nuevo POI");
+
+    // (Opcional) poner un icono al diálogo
+    Stage ds = (Stage) dlg.getDialogPane().getScene().getWindow();
+    ds.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
+
+    // Botones Aceptar / Cancelar
+    ButtonType ok = new ButtonType("Aceptar", ButtonBar.ButtonData.OK_DONE);
+    dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
+
+    // Campos de entrada
+    TextField name = new TextField();
+    name.setPromptText("Nombre del POI");
+    TextArea desc = new TextArea();
+    desc.setPromptText("Descripción...");
+    desc.setWrapText(true);
+    desc.setPrefRowCount(5);
+
+    // Montamos el contenido en un VBox
+    dlg.getDialogPane().setContent(new VBox(10,
+        new Label("Nombre:"), name,
+        new Label("Descripción:"), desc
+    ));
+
+    // Convertimos el resultado en un objeto Poi (o null si canceló)
+    dlg.setResultConverter(btn -> btn == ok
+        ? new Poi(name.getText().trim(), desc.getText().trim(), 0, 0)
+        : null
+    );
+
+    // Mostramos y procesamos el resultado
+    Optional<Poi> res = dlg.showAndWait();
+    res.ifPresent(poi -> {
+        // Calculamos la posición en coordenadas del pane
+        Point2D lp = zoomGroup.sceneToLocal(e.getSceneX(), e.getSceneY());
+        poi.setPosition(lp);
+        map_listview.getItems().add(poi);
+    });
+}
+    
+    
+@FXML public void seleccionarMarcaCirculo(ActionEvent e) {
+    tipoPunto = "circulo";
+}
+
+@FXML public void seleccionarMarcaEstrella(ActionEvent e) {
+    tipoPunto = "estrella";
+}
+
+@FXML public void seleccionarMarcaAsterisco(ActionEvent e) {
+    tipoPunto = "asterisco";
+}
+
+@FXML public void seleccionarMarcaCruz(ActionEvent e) {
+    tipoPunto = "cruz";
+}
+@FXML public void seleccionarEditarColor(ActionEvent e) {
+    resetModes();
+    markingEnabled = true;
+    currentTool    = Tool.EDIT_COLOR;
+    colorPickerEdicion.show();
+}
+@FXML
+private void about(ActionEvent e) {
+    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+    alert.setTitle("Acerca de");
+    alert.setHeaderText("IPC - 2025");
+    // opcional: añadir icono
+    // Stage st = (Stage) alert.getDialogPane().getScene().getWindow();
+    // st.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
+    alert.showAndWait();
+}
+
+    @FXML public void zoomIn(ActionEvent e)  { zoom_slider.setValue(zoom_slider.getValue()+0.1); }
+    @FXML public void zoomOut(ActionEvent e) { zoom_slider.setValue(zoom_slider.getValue()-0.1); }
+
+    private void resetModes() {
+        currentTool     = Tool.NONE;
+        markingEnabled  = false;
+        lineStarted     = arcStarted = false;
+        compasP1 = compasP2 = rulerP1 = rulerP2 = null;
     }
 
+    private void zoom(double s) {
+        double h = map_scrollpane.getHvalue(), v = map_scrollpane.getVvalue();
+        zoomGroup.setScaleX(s); zoomGroup.setScaleY(s);
+        map_scrollpane.setHvalue(h); map_scrollpane.setVvalue(v);
+    }
+    
     @FXML
-    private void seleccionarGrosorMedio(ActionEvent event) {
-    }
+private void seleccionarArcoRadioFijo(ActionEvent e) {
+    modoArco = ModoArco.RADIO_FIJO;
+    seleccionarTrazarArco(e); // activa la herramienta
+}
 
-    @FXML
-    private void seleccionarGrosorFino(ActionEvent event) {
-    }
-
-    @FXML
-    private void seleccionarTrazarArco(ActionEvent event) {
-    }
-
-    @FXML
-    private void seleccionarGrosorArcoMuyGrueso(ActionEvent event) {
-    }
-
-    @FXML
-    private void seleccionarGrosorArcoGrueso(ActionEvent event) {
-    }
-
-    @FXML
-    private void seleccionarGrosorArcoMedio(ActionEvent event) {
-    }
-
-    @FXML
-    private void seleccionarGrosorArcoFino(ActionEvent event) {
-    }
-
-    @FXML
-    private void seleccionarAnotarTexto(ActionEvent event) {
-    }
-
-    @FXML
-    private void seleccionarEditarColor(ActionEvent event) {
-    }
-
-    @FXML
-    private void seleccionarEliminarMarca(ActionEvent event) {
-    }
-
-    @FXML
-    private void seleccionarLimpiarCarta(ActionEvent event) {
-    }
-
-    @FXML
-    private void seleccionarCompas(ActionEvent event) {
-    }
-
-    @FXML
-    private void seleccionarTransportador(ActionEvent event) {
-    }
-
-    @FXML
-    private void seleccionarRegla(ActionEvent event) {
-    }
-
-    @FXML
-    private void onPerfilAction(ActionEvent event) {
-    }
-
-
+@FXML
+private void seleccionarArcoRadioLibre(ActionEvent e) {
+    modoArco = ModoArco.RADIO_LIBRE;
+    seleccionarTrazarArco(e); // activa la herramienta
+}
+    
+   
 }
