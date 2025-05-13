@@ -23,7 +23,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
 
-<VBox prefHeight="556.0" prefWidth="853.0" stylesheets="@../resources/estilos.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafxmlapplication.FXMLDocumentController">
+<fx:root prefHeight="556.0" prefWidth="853.0" stylesheets="@../resources/estilos.css" type="VBox" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafxmlapplication.FXMLTrabajoController">
    <children>
       <BorderPane prefHeight="572.0" prefWidth="853.0">
          <top>
@@ -350,4 +350,4 @@
          </left>
       </BorderPane>
    </children>
-</VBox>
+</fx:root>

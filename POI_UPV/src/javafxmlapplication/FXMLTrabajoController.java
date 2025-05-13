@@ -81,7 +81,7 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
 
 
-public class FXMLDocumentController implements Initializable {
+public class FXMLTrabajoController implements Initializable {
 
     // — Datos y Zoom —
     private final HashMap<String,Poi> hm = new HashMap<>();
@@ -722,7 +722,7 @@ public void seleccionarTransportador(ActionEvent e) {
 }
     @FXML public void onEditarPerfil(ActionEvent e) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("PerfilPanel.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/PerfilPanel.fxml"));
             Parent root = loader.load();
             Stage dialog = new Stage();
             dialog.setTitle("Editar perfil");

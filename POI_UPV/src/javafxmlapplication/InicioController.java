@@ -14,6 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -69,7 +70,20 @@ public class InicioController implements Initializable {
         Navigation nav = Navigation.getInstance();
         User res = nav.authenticate(nick, pass);
         
-        FXMLLoader loader= new  FXMLLoader(getClass().getResource("/vista/FXMLDocument.fxml"));
+        
+        
+        URL fxmlUrl = getClass().getResource("/vista/Trabajo.fxml");
+        System.out.println("Trabajo.fxml está en: " + fxmlUrl);
+        if (fxmlUrl == null) {
+            throw new RuntimeException("No se localiza /vista/Trabajo.fxml en el classpath");
+        }
+        FXMLLoader loader = new FXMLLoader(fxmlUrl);
+        
+
+        
+        
+        
+        
         Parent root = loader.load();
         //FXMLDocumentController controlador2= loader.getController();
         //controlador2.initUser(res.getNickName(), res.getEmail(), res.getPassword(), res.getAvatar(), res.getBirthdate());
@@ -79,7 +93,7 @@ public class InicioController implements Initializable {
         stage.setScene(scene);
         stage.setTitle("Aplicación");
         stage.initModality(Modality.APPLICATION_MODAL);
-        estadisticasButton.getScene().getWindow().hide();
+        ((Stage)((Node)event.getSource()).getScene().getWindow()).hide();
         stage.showAndWait();
     }
 
