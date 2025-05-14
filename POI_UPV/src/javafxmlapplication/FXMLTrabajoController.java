@@ -9,9 +9,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import javafx.animation.Timeline;
 import javafx.animation.KeyFrame;
@@ -81,6 +83,7 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
 import model.Navigation;
+import model.User;
 import poiupv.Poi;
 
 
@@ -247,6 +250,7 @@ public void initialize(URL url, ResourceBundle rb) {
     setupZoom();
     setupControls();
     setupPaneClickHandler();
+    ivPerfil.imageProperty().setValue(avatar);
         
     
     
@@ -753,6 +757,12 @@ public void seleccionarTransportador(ActionEvent e) {
             controlador2.mostrarinfo(nick, email, pass, avatar, birthday);
             dialog.setScene(new Scene(root));
             dialog.showAndWait();
+            
+            if(controlador2.pulsadoGuardar()){
+                User user = controlador2.getUser();
+                ivPerfil.imageProperty().setValue(user.getAvatar());
+                
+            }
             
     }
     

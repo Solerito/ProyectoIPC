@@ -9,6 +9,8 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -45,7 +47,9 @@ public class PerfilPanelController implements Initializable{
     private String pass;
     private Image avatar;
     private LocalDate birthday;
-    
+    private Boolean pulsadoGuardar;
+    private User user;
+    private Navigation nav;
     
     
     public void initUser(String u, String e,String p, Image a,LocalDate dt ){
@@ -64,8 +68,24 @@ public class PerfilPanelController implements Initializable{
          dpFechaNacimiento.setValue(birthday);
     }
     
+    public boolean pulsadoGuardar(){
+        return pulsadoGuardar;
+    }
+    
+    public User getUser(){
+        return user;
+    }
+    
     @Override
      public void initialize(URL url, ResourceBundle rb){
+        pulsadoGuardar = false;
+        
+        try {
+            nav = Navigation.getInstance();
+            user = nav.authenticate(nick, pass);
+        } catch (NavDAOException ex) {
+            Logger.getLogger(PerfilPanelController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         
          
@@ -89,8 +109,8 @@ public class PerfilPanelController implements Initializable{
     /** Guarda los cambios (aquí solo cierra el diálogo) */
     @FXML
     void onGuardar() throws NavDAOException {
-        Navigation nav = Navigation.getInstance();
-        User user = nav.authenticate(nick, pass);
+        
+        user = nav.authenticate(nick, pass);
         // Validaciones mínimas (si quieres):
         if (pfContrasena.getText().length() < 8) {
             showError("La contraseña debe tener al menos 8 caracteres.");
@@ -101,12 +121,14 @@ public class PerfilPanelController implements Initializable{
             user.setAvatar(ivDialogIcon.getImage());
             user.setBirthdate(dpFechaNacimiento.getValue());
             
+            pulsadoGuardar = true;
+            
             
         }
         // …tú decides si validas email/fecha aquí…
         // Cerramos la ventana:
         ivDialogIcon.getScene().getWindow().hide();
-        showInfo("Cambios guardados (simulado).");
+        showInfo("Cambios guardados, para su visualización debe reiniciar el programa.");
     }
 
     /** Cancela y cierra */

@@ -99,5 +99,27 @@ public class InicioController implements Initializable {
         //estadisticasButton.getScene().getWindow().hide();
         stage.show();
     }
+
+    @FXML
+    private void perfilButtonOnAction(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/PerfilPanel.fxml"));
+            Parent root = loader.load();
+            Stage dialog = new Stage();
+            dialog.setTitle("Editar perfil");
+            
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            PerfilPanelController controlador2= loader.getController();
+            controlador2.initUser(nick, email, pass, avatar, birthday);
+            controlador2.mostrarinfo(nick, email, pass, avatar, birthday);
+            dialog.setScene(new Scene(root));
+            dialog.showAndWait();
+            
+            
+            if(controlador2.pulsadoGuardar()){
+                User user = controlador2.getUser();
+                //ivPerfil.imageProperty().setValue(user.getAvatar());
+                
+            }
+    }
     
 }

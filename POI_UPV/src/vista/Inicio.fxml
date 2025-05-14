@@ -14,7 +14,7 @@
          <children>
             <HBox alignment="CENTER_RIGHT" prefHeight="5.0" prefWidth="554.0">
                <children>
-                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="56.0" text="Perfil">
+                  <Button mnemonicParsing="false" onAction="#perfilButtonOnAction" prefHeight="26.0" prefWidth="56.0" text="Perfil">
                      <HBox.margin>
                         <Insets right="5.0" />
                      </HBox.margin>
