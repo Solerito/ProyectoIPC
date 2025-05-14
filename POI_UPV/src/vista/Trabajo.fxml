@@ -255,8 +255,8 @@
                   <MenuButton fx:id="mbPerfil" mnemonicParsing="false">
                     <items>
                         <MenuItem fx:id="miEditarPerfil" mnemonicParsing="false" onAction="#onEditarPerfil" text="Editar perfil" />
-                      <MenuItem mnemonicParsing="false" text="Cerrar sesión" />
-                      <MenuItem mnemonicParsing="false" text="Cerrar aplicación" />
+                      <MenuItem mnemonicParsing="false" onAction="#CerrarSesionAction" text="Cerrar sesión" />
+                      <MenuItem mnemonicParsing="false" onAction="#CerrarAplicacionAction" text="Cerrar aplicación" />
                     </items>
                      <graphic>
                         <ImageView fx:id="ivPerfil" fitHeight="24.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">

@@ -7,6 +7,7 @@ package javafxmlapplication;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -82,8 +83,10 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
+import model.NavDAOException;
 import model.Navigation;
 import model.User;
+import model.sub.SqliteConnection;
 import poiupv.Poi;
 
 
@@ -187,6 +190,17 @@ private EventHandler<MouseEvent> lineDragHandler;
     @FXML
     private MenuItem pin_info;
 
+    @FXML
+    private void CerrarSesionAction(ActionEvent event) throws IOException, Exception {
+        ivPerfil.getScene().getWindow().hide();
+        poiupv.PoiUPVApp.reiniciarApp();
+    }
+
+    @FXML
+    private void CerrarAplicacionAction(ActionEvent event) {
+        ivPerfil.getScene().getWindow().hide();
+    }
+
     // — Estado global —
     private enum Tool { NONE, POINT, LINE, ARC, TEXT, EDIT_COLOR, DELETE, COMPASS, RULER, PROTRACTOR }
     private Tool currentTool      = Tool.NONE;
@@ -234,6 +248,8 @@ private ModoArco modoArco = ModoArco.RADIO_FIJO;
     private Image avatar;
     private LocalDate birthday;
     
+    private User user;
+    
     public void initUser(String u, String e,String p, Image a,LocalDate dt ){
             nick = u;
             email = e;
@@ -245,6 +261,24 @@ private ModoArco modoArco = ModoArco.RADIO_FIJO;
 
     @Override
 public void initialize(URL url, ResourceBundle rb) {
+    
+    try {
+            SqliteConnection sqlite = new SqliteConnection();
+            sqlite.connectSqlite("C:data.db");
+            System.out.println("Base de datos encontrada");
+            try {
+                Navigation nav = Navigation.getInstance();
+                user = nav.authenticate(nick, pass);
+            } catch (NavDAOException ex) {
+                System.out.println("Nav exception");
+
+            }
+            
+
+        } catch (SQLException ex) {
+            System.out.println("Base de datos no encontrada");
+        }
+    
     // 1) Tu setup original
     initData();
     setupZoom();

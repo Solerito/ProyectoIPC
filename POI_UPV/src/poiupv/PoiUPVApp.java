@@ -16,20 +16,38 @@ import javafx.stage.Stage;
  *
  * @author jose
  */
-public class PoiUPVApp extends Application {
+
+    
+    
+
+    public class PoiUPVApp extends Application {
+        private static Stage Pstage;
+        private static PoiUPVApp instance;
     
     @Override
     public void start(Stage stage) throws Exception {
+        instance = this;
+        Pstage = stage;
+        
         FXMLLoader loader = new  FXMLLoader(getClass().getResource("/vista/VentanaAutenticacion.fxml"));
         Parent root = loader.load();
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
+        Pstage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
         Scene scene = new Scene(root);
-        stage.setTitle("Bienvenido");
-        stage.setScene(scene);
-        stage.show();
+        Pstage.setTitle("Bienvenido");
+        Pstage.setScene(scene);
+        Pstage.show();
         
         
         
+    }
+    
+    public static void reiniciarApp() throws Exception {
+        // Cierra la ventana actual
+        
+
+        // Crea un nuevo Stage y llama a start()
+        Stage newStage = new Stage();
+        instance.start(newStage);
     }
 
     /**

@@ -6,6 +6,7 @@ package javafxmlapplication;
 
 import java.io.File;
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -27,6 +28,7 @@ import javafx.stage.Window;
 import model.NavDAOException;
 import model.Navigation;
 import model.User;
+import model.sub.SqliteConnection;
 
 public class PerfilPanelController implements Initializable{
 
@@ -79,6 +81,23 @@ public class PerfilPanelController implements Initializable{
     @Override
      public void initialize(URL url, ResourceBundle rb){
         pulsadoGuardar = false;
+        
+        try {
+            SqliteConnection sqlite = new SqliteConnection();
+            sqlite.connectSqlite("C:data.db");
+            System.out.println("Base de datos encontrada");
+            try {
+                Navigation nav = Navigation.getInstance();
+                
+            } catch (NavDAOException ex) {
+                System.out.println("hola");
+
+            }
+            
+
+        } catch (SQLException ex) {
+            System.out.println("Base de datos no encontrada");
+        }
         
         try {
             nav = Navigation.getInstance();
