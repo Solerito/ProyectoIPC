@@ -334,8 +334,8 @@
          <left>
             <VBox prefHeight="509.0" prefWidth="164.0" BorderPane.alignment="CENTER">
                <children>
-                  <TextArea editable="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="291.0" prefWidth="166.0" />
-                  <Label text=" Selecciona la solición:" />
+                  <TextArea fx:id="taProblem" editable="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="291.0" prefWidth="166.0" />
+                  <Label text=" Selecciona la solución:" />
                   <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                      <children>
                         <Button minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="26.0" prefWidth="41.0" text="A" HBox.hgrow="ALWAYS" />

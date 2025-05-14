@@ -83,8 +83,10 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
+import model.Answer;
 import model.NavDAOException;
 import model.Navigation;
+import model.Problem;
 import model.User;
 import model.sub.SqliteConnection;
 import poiupv.Poi;
@@ -189,6 +191,8 @@ private EventHandler<MouseEvent> lineDragHandler;
     private MenuButton map_pin;
     @FXML
     private MenuItem pin_info;
+    @FXML
+    private TextArea taProblem;
 
     @FXML
     private void CerrarSesionAction(ActionEvent event) throws IOException, Exception {
@@ -249,6 +253,8 @@ private ModoArco modoArco = ModoArco.RADIO_FIJO;
     private LocalDate birthday;
     
     private User user;
+    private List<Problem> listProblem;
+    private List<Answer> listAnswer;
     
     public void initUser(String u, String e,String p, Image a,LocalDate dt ){
             nick = u;
@@ -266,18 +272,22 @@ public void initialize(URL url, ResourceBundle rb) {
             SqliteConnection sqlite = new SqliteConnection();
             sqlite.connectSqlite("C:data.db");
             System.out.println("Base de datos encontrada");
-            try {
-                Navigation nav = Navigation.getInstance();
-                user = nav.authenticate(nick, pass);
-            } catch (NavDAOException ex) {
-                System.out.println("Nav exception");
-
-            }
-            
-
+  
         } catch (SQLException ex) {
             System.out.println("Base de datos no encontrada");
         }
+    
+    try{
+            Navigation nav = Navigation.getInstance();
+            user = nav.authenticate(nick, pass);
+            listProblem = nav.getProblems();
+        } catch (NavDAOException ex) {
+            System.out.println("Nav exception");
+    }
+        
+        Problem problem = listProblem.get(0);
+        String res = problem.getText();
+        taProblem.setText(res);
     
     // 1) Tu setup original
     initData();
@@ -285,6 +295,8 @@ public void initialize(URL url, ResourceBundle rb) {
     setupControls();
     setupPaneClickHandler();
     ivPerfil.imageProperty().setValue(avatar);
+    taProblem.setWrapText(true);
+    
         
     
     
@@ -355,9 +367,10 @@ public void initialize(URL url, ResourceBundle rb) {
     }
 
     private void setupZoom() {
-        zoom_slider.setMin(0.5);
+        
+        zoom_slider.setMin(0.05);
         zoom_slider.setMax(1.5);
-        zoom_slider.setValue(1.0);
+        zoom_slider.setValue(0.75);
         zoom_slider.valueProperty().addListener((o,ov,nv)->zoom(nv.doubleValue()));
         Group content = new Group();
         zoomGroup = new Group();

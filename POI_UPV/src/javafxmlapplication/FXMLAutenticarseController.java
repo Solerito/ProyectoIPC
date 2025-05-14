@@ -113,6 +113,7 @@ public class FXMLAutenticarseController implements Initializable {
                 //stage.initModality(Modality.APPLICATION_MODAL);
                 InicioController controlador1= loader.getController();
                 controlador1.initUser(res.getNickName(), res.getEmail(), res.getPassword(), res.getAvatar(), res.getBirthdate());
+                controlador1.initSession(ses);
                 
                 
                 

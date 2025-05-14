@@ -23,6 +23,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.NavDAOException;
 import model.Navigation;
+import model.Session;
 import model.User;
 import model.sub.SqliteConnection;
 
@@ -42,12 +43,18 @@ public class InicioController implements Initializable {
     private Image avatar;
     private LocalDate birthday;
     
+    private Session session;
+    
     public void initUser(String u, String e,String p, Image a,LocalDate dt ){
             nick = u;
             email = e;
             pass = p;
             avatar = a;
             birthday = dt;        
+        }
+    
+    public void initSession(Session s){
+            session = s;
         }
     /**
      * Initializes the controller class.
@@ -90,6 +97,9 @@ public class InicioController implements Initializable {
     private void estadisticasButtonOnAction(ActionEvent event) throws IOException {
         FXMLLoader loader= new  FXMLLoader(getClass().getResource("/vista/Estadisticas.fxml"));
         Parent root = loader.load();
+        FXMLTrabajoController controlador2= loader.getController();
+        controlador2.initUser(nick, email, pass, avatar, birthday);
+        
         Scene scene = new Scene(root,650,500);
         Stage stage = new Stage();
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
