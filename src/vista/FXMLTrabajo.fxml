@@ -288,7 +288,7 @@
          <bottom>
             <HBox alignment="CENTER_LEFT" prefHeight="33.0" prefWidth="853.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="114.0" text="Terminar ejercicio">
+                  <Button fx:id="buttonTerminar" mnemonicParsing="false" onAction="#terminarejerciciobutton" prefHeight="26.0" prefWidth="114.0" text="Terminar ejercicio">
                      <HBox.margin>
                         <Insets bottom="10.0" right="440.0" />
                      </HBox.margin>

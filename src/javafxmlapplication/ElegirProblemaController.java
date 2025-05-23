@@ -75,6 +75,8 @@ public class ElegirProblemaController implements Initializable {
     private Problem selectedProblem;
     @FXML
     private ImageView ivPerfil;
+    
+    private int indice;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -119,8 +121,8 @@ public class ElegirProblemaController implements Initializable {
     @FXML
     private void realizarEjercicioButtonOnAction(ActionEvent event) throws IOException {
         if (!listaProblemas.getSelectionModel().isEmpty()) {
-            int sel = listaProblemas.getSelectionModel().getSelectedIndex();
-            selectedProblem = ol.get(sel);
+            indice = listaProblemas.getSelectionModel().getSelectedIndex();
+            selectedProblem = ol.get(indice);
         
         // Carga la siguiente ventana (FXMLTrabajo)
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/FXMLTrabajo.fxml"));
@@ -134,17 +136,18 @@ public class ElegirProblemaController implements Initializable {
         if (controlador == null) {
             System.out.println("El controlador de FXMLTrabajo no se ha inicializado correctamente");
         }
-        controlador.setProblem(selectedProblem);  // Pasa el problema seleccionado
+        controlador.initProblema(selectedProblem,indice); 
+        controlador.initUser(nick, email, pass, avatar, birthday);
 
         // Muestra la nueva ventana
-        Scene scene = new Scene(root, 900, 700);
+        Scene scene = new Scene(root, 900, 600);
         Stage stage = new Stage();
         stage.setScene(scene);
         stage.setTitle("Realizar Problema");
-        stage.show();
+        stage.showAndWait();
 
         // Opcionalmente oculta la ventana actual (si lo deseas)
-        ((Stage)((Node) event.getSource()).getScene().getWindow()).hide();
+        ((Stage)((Node) event.getSource()).getScene().getWindow()).close();
     }
 }
 
@@ -224,13 +227,13 @@ public class ElegirProblemaController implements Initializable {
     @FXML
 private void botonModoAleatorioOnAction(ActionEvent event) {
     if (list != null && !list.isEmpty()) {
-        int indiceAleatorio = (int) (Math.random() * list.size());
+        indice = (int) (Math.random() * list.size());
         // Selecciona el problema aleatorio en el ListView
-        listaProblemas.getSelectionModel().select(indiceAleatorio);
+        listaProblemas.getSelectionModel().select(indice);
         // Opcional: hacer que ese problema seleccionado se enfoque/visible en la lista
-        listaProblemas.scrollTo(indiceAleatorio);
-        int sel = listaProblemas.getSelectionModel().getSelectedIndex();
-        selectedProblem = ol.get(sel);
+        listaProblemas.scrollTo(indice);
+        //int sel = listaProblemas.getSelectionModel().getSelectedIndex();
+        selectedProblem = ol.get(indice);
     } else {
         Alert alert = new Alert(Alert.AlertType.WARNING, "No hay problemas disponibles para seleccionar.");
         alert.showAndWait();

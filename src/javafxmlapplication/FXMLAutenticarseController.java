@@ -58,7 +58,6 @@ public class FXMLAutenticarseController implements Initializable {
     private TextField usuarioField;
     @FXML
     private Button RegistrarseButton;
-    @FXML
     private Button contrseñaButton;
     
     private boolean passwordVisible = false;
@@ -150,20 +149,8 @@ public class FXMLAutenticarseController implements Initializable {
         stage.showAndWait();
     }
 
-    @FXML
-    private void contrseñaButtonOnAction(ActionEvent event) {
-        if (passwordVisible) {
-            // Ocultar contraseña
-            passwordField.setStyle("-fx-echo-char: '*';");
-            contrseñaButton.setText("Mostrar contraseña");
-            passwordVisible = false;
-        } else {
-            // Mostrar contraseña
-            passwordField.setStyle("-fx-echo-char: 0;");
-            contrseñaButton.setText("Ocultar contraseña");
-            passwordVisible = true;
-        }
-}
+    
+
 
     
 }

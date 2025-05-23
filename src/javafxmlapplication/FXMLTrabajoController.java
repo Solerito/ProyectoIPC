@@ -77,6 +77,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.geometry.Point2D;
+import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
@@ -187,7 +188,7 @@ private EventHandler<MouseEvent> lineDragHandler;
     @FXML
     private MenuItem miCerrarAplicacion;
     @FXML
-    private Label mousePosition;
+    private Button buttonTerminar;
 
     private void CerrarSesionAction(ActionEvent event) throws IOException, Exception {
         ivPerfil.getScene().getWindow().hide();
@@ -231,6 +232,36 @@ private EventHandler<MouseEvent> lineDragHandler;
         stage.setTitle("Cerrar Aplicación");
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.showAndWait();
+    }
+
+    @FXML
+    private void terminarejerciciobutton(ActionEvent event) throws IOException {
+        
+        
+        // Carga la siguiente ventana (FXMLTrabajo)
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/FXMLRespuestas.fxml"));
+        Parent root = loader.load();
+
+        if (root == null) {
+            System.out.println("Error al cargar el FXML: FXMLRespuestas.fxml");
+        }
+        
+        FXMLRespuestasController controlador = loader.getController();
+        if (controlador == null) {
+            System.out.println("El controlador de FXMLTrabajo no se ha inicializado correctamente");
+        }
+        controlador.initProblema(problema,indice); 
+        controlador.initUser(nick, email, pass, avatar, birthday);
+
+        // Muestra la nueva ventana
+        Scene scene = new Scene(root, 550, 525);
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.setTitle("Realizar Problema");
+        stage.showAndWait();
+
+        // Opcionalmente oculta la ventana actual (si lo deseas)
+        ((Stage)((Node) event.getSource()).getScene().getWindow()).close();
     }
 
     // — Estado global —
@@ -285,6 +316,8 @@ private ModoArco modoArco = ModoArco.RADIO_FIJO;
     private User user;
     private List<Problem> listProblem;
     private List<Answer> listAnswer;
+    private Problem problema;
+    private int indice;
     
     public void initUser(String u, String e,String p, Image a,LocalDate dt ){
             nick = u;
@@ -293,6 +326,11 @@ private ModoArco modoArco = ModoArco.RADIO_FIJO;
             avatar = a;
             birthday = dt;        
         }
+    
+    public void initProblema(Problem p, int i){
+        problema = p;
+        indice = i;
+    }
 
 
     @Override
@@ -320,8 +358,9 @@ public void initialize(URL url, ResourceBundle rb) {
             System.out.println("Nav exception");
     }
         
-        Problem problem = listProblem.get(0);
-        String res = problem.getText();
+        problema = listProblem.get(indice);
+       // System.out.println(problem);
+        String res = problema.getText();
         taProblem.setText(res);
     
     // 1) Tu setup original
@@ -838,7 +877,7 @@ public void seleccionarTrazarArco(ActionEvent e) {
             dialog.setTitle("Editar perfil");
             dialog.initOwner(paneCarta.getScene().getWindow());
             dialog.initModality(Modality.APPLICATION_MODAL);
-            PerfilPanelController controlador2= loader.getController();
+            PerfilPanelController controlador2 = loader.getController();
             controlador2.initUser(nick, email, pass, avatar, birthday);
             controlador2.mostrarinfo(nick, email, pass, avatar, birthday);
             dialog.setScene(new Scene(root));

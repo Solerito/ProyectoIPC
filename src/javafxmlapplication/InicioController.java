@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -47,6 +49,7 @@ public class InicioController implements Initializable {
     private LocalDate birthday;
     
     private Session session;
+    private Parent root;
     
     public void initUser(String u, String e,String p, Image a,LocalDate dt ){
             nick = u;
@@ -70,6 +73,8 @@ public class InicioController implements Initializable {
         } catch (SQLException ex) {
             System.out.println("Base de datos no encontrada");
         }
+        
+        
         
     }    
 
