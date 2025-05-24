@@ -14,11 +14,13 @@ import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.stage.Stage;
 import model.Answer;
 import model.NavDAOException;
 import model.Navigation;
@@ -61,21 +63,22 @@ public class FXMLRespuestasController implements Initializable {
     private int hits;
     private int faults;
     
-    public void initUser(String nick, String email, String pass, Image avatar, LocalDate birthday) {
-        this.nick = nick;
-        this.email = email;
-        this.pass = pass;
-        this.avatar = avatar;
-        this.birthday = birthday;
-    }
+    public void initUser(String u, String e,String p, Image a,LocalDate dt ){
+            nick = u;
+            email = e;
+            pass = p;
+            avatar = a;
+            birthday = dt;        
+        }
     
-    public void initProblema(Problem p, int i){
+    public void initProblema(Problem p, Integer i){
         problema = p;
         indice = i;
     }
     
-    public void initSesion(int hits, int faults){
-        
+    public void initSesion(Integer h, Integer f){
+        hits = h;
+        faults = f;
     }
     
     public void alertaCorrecto(){
@@ -86,6 +89,7 @@ public class FXMLRespuestasController implements Initializable {
 
         // Mostrar la ventana y esperar que el usuario la cierre
         alerta.showAndWait();
+        buttonA.getScene().getWindow().hide();
     }
     
     public void alertaIncorrecto(){
@@ -96,6 +100,8 @@ public class FXMLRespuestasController implements Initializable {
 
         // Mostrar la ventana y esperar que el usuario la cierre
         alerta.showAndWait();
+        
+        buttonA.getScene().getWindow().hide();
     }
     
     /**
@@ -104,17 +110,23 @@ public class FXMLRespuestasController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            nav = Navigation.getInstance();
-            user = nav.authenticate(nick, pass);
+            
             SqliteConnection sqlite = new SqliteConnection();
             sqlite.connectSqlite("C:data.db");
             System.out.println("Base de datos encontrada");
             
-        } catch (NavDAOException ex) {
-            Logger.getLogger(ElegirProblemaController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
             Logger.getLogger(ElegirProblemaController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        try {
+            nav = Navigation.getInstance();
+            user = nav.authenticate(nick, pass);
+        } catch (NavDAOException ex) {
+            Logger.getLogger(FXMLRespuestasController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
         list = nav.getProblems();
         problema = list.get(indice);
         String res = problema.getText();

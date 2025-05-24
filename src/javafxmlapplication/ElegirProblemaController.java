@@ -73,10 +73,12 @@ public class ElegirProblemaController implements Initializable {
     private User user;
     
     private Problem selectedProblem;
+    private int indice;
+    
     @FXML
     private ImageView ivPerfil;
     
-    private int indice;
+    
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -110,13 +112,13 @@ public class ElegirProblemaController implements Initializable {
     }
     
     
-    public void initUser(String nick, String email, String pass, Image avatar, LocalDate birthday) {
-        this.nick = nick;
-        this.email = email;
-        this.pass = pass;
-        this.avatar = avatar;
-        this.birthday = birthday;
-    }
+    public void initUser(String u, String e,String p, Image a,LocalDate dt ){
+            nick = u;
+            email = e;
+            pass = p;
+            avatar = a;
+            birthday = dt;        
+        }
 
     @FXML
     private void realizarEjercicioButtonOnAction(ActionEvent event) throws IOException {
@@ -136,18 +138,20 @@ public class ElegirProblemaController implements Initializable {
         if (controlador == null) {
             System.out.println("El controlador de FXMLTrabajo no se ha inicializado correctamente");
         }
+        
         controlador.initProblema(selectedProblem,indice); 
         controlador.initUser(nick, email, pass, avatar, birthday);
 
         // Muestra la nueva ventana
         Scene scene = new Scene(root, 900, 600);
         Stage stage = new Stage();
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
         stage.setScene(scene);
         stage.setTitle("Realizar Problema");
         stage.showAndWait();
 
         // Opcionalmente oculta la ventana actual (si lo deseas)
-        ((Stage)((Node) event.getSource()).getScene().getWindow()).close();
+        ((Stage)((Node) event.getSource()).getScene().getWindow()).hide();
     }
 }
 

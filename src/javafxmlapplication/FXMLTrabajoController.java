@@ -19,6 +19,7 @@ import java.util.Set;
 import javafx.animation.Timeline;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -256,12 +257,14 @@ private EventHandler<MouseEvent> lineDragHandler;
         // Muestra la nueva ventana
         Scene scene = new Scene(root, 550, 525);
         Stage stage = new Stage();
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
+
         stage.setScene(scene);
         stage.setTitle("Realizar Problema");
         stage.showAndWait();
 
         // Opcionalmente oculta la ventana actual (si lo deseas)
-        ((Stage)((Node) event.getSource()).getScene().getWindow()).close();
+        ((Stage)((Node) event.getSource()).getScene().getWindow()).hide();
     }
 
     // — Estado global —
@@ -315,7 +318,7 @@ private ModoArco modoArco = ModoArco.RADIO_FIJO;
     
     private User user;
     private List<Problem> listProblem;
-    private List<Answer> listAnswer;
+    private ObservableList<Problem> ol;
     private Problem problema;
     private int indice;
     
@@ -354,13 +357,14 @@ public void initialize(URL url, ResourceBundle rb) {
             nav = Navigation.getInstance();
             user = nav.authenticate(nick, pass);
             listProblem = nav.getProblems();
+            ol = FXCollections.observableArrayList(listProblem);
         } catch (NavDAOException ex) {
             System.out.println("Nav exception");
     }
         
-        problema = listProblem.get(indice);
-       // System.out.println(problem);
+        problema = ol.get(indice);
         String res = problema.getText();
+        System.out.println(res);
         taProblem.setText(res);
     
     // 1) Tu setup original
@@ -875,6 +879,8 @@ public void seleccionarTrazarArco(ActionEvent e) {
             Parent root = loader.load();
             Stage dialog = new Stage();
             dialog.setTitle("Editar perfil");
+            dialog.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
+
             dialog.initOwner(paneCarta.getScene().getWindow());
             dialog.initModality(Modality.APPLICATION_MODAL);
             PerfilPanelController controlador2 = loader.getController();
