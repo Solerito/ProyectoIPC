@@ -4,6 +4,7 @@
  */
 package javafxmlapplication;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -13,18 +14,23 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Answer;
 import model.NavDAOException;
 import model.Navigation;
 import model.Problem;
+import model.Session;
 import model.User;
 import model.sub.SqliteConnection;
 
@@ -62,6 +68,8 @@ public class FXMLRespuestasController implements Initializable {
     private Label labelA;
     private int hits;
     private int faults;
+    private Stage sTrabajo;
+    
     
     public void initUser(String u, String e,String p, Image a,LocalDate dt ){
             nick = u;
@@ -74,6 +82,15 @@ public class FXMLRespuestasController implements Initializable {
     public void initProblema(Problem p, Integer i){
         problema = p;
         indice = i;
+        
+        String res = problema.getText();
+        labelP.setText(res);
+        labelP.setWrapText(true);
+        listAnswers = problema.getAnswers();
+        buttonA.setText(listAnswers.get(0).getText());
+        buttonB.setText(listAnswers.get(1).getText());
+        buttonC.setText(listAnswers.get(2).getText());
+        buttonD.setText(listAnswers.get(3).getText());
     }
     
     public void initSesion(Integer h, Integer f){
@@ -81,27 +98,58 @@ public class FXMLRespuestasController implements Initializable {
         faults = f;
     }
     
-    public void alertaCorrecto(){
+    
+    
+    
+    public void alertaCorrecto() throws IOException{
         Alert alerta = new Alert(AlertType.INFORMATION);
         alerta.setTitle("Respuesta");
         alerta.setHeaderText("Su respuesta es correcta!");
         alerta.setContentText("Click en aceptar para avanzar");
+        
 
         // Mostrar la ventana y esperar que el usuario la cierre
+        
+        
         alerta.showAndWait();
-        buttonA.getScene().getWindow().hide();
+        
+        //sTrabajo.hide();
+        
+        if(!alerta.isShowing()){
+            buttonA.getScene().getWindow().hide();
+
+            FXMLLoader loader = new  FXMLLoader(getClass().getResource("/vista/Inicio.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root,650,500);
+            Stage stage = new Stage();
+            stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
+            stage.setScene(scene);
+            stage.setTitle("Inicio");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            InicioController controlador1= loader.getController();
+            controlador1.initUser(nick, email, pass, avatar, birthday);
+            
+            stage.show();
+        }
     }
     
-    public void alertaIncorrecto(){
+    public void alertaIncorrecto() throws IOException{
         Alert alerta = new Alert(AlertType.INFORMATION);
         alerta.setTitle("Respuesta");
         alerta.setHeaderText("Su respuesta es incorrecta");
         alerta.setContentText("Click en aceptar para avanzar");
 
         // Mostrar la ventana y esperar que el usuario la cierre
-        alerta.showAndWait();
         
-        buttonA.getScene().getWindow().hide();
+        
+        alerta.showAndWait();
+        //buttonA.getScene().getWindow().hide();
+        
+        
+        
+        
+        
+        
     }
     
     /**
@@ -121,27 +169,25 @@ public class FXMLRespuestasController implements Initializable {
         
         try {
             nav = Navigation.getInstance();
-            user = nav.authenticate(nick, pass);
+            
         } catch (NavDAOException ex) {
             Logger.getLogger(FXMLRespuestasController.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+        user = nav.authenticate(nick, pass);
         
-        list = nav.getProblems();
-        problema = list.get(indice);
-        String res = problema.getText();
-        labelP.setText(res);
-        labelP.setWrapText(true);
+        //list = nav.getProblems();
+        //problema = list.get(indice);
+        //String res = problema.getText();
+        //labelP.setText(res);
+        System.out.println("Inicial aciertos: "+ hits + "Inicial fallos: " + faults);
         
-        listAnswers = problema.getAnswers();
-        buttonA.setText(listAnswers.get(0).getText());
-        buttonB.setText(listAnswers.get(1).getText());
-        buttonC.setText(listAnswers.get(2).getText());
-        buttonD.setText(listAnswers.get(3).getText());
+        
+        
     }    
 
     @FXML
-    private void buttonAOnAction(ActionEvent event) {
+    private void buttonAOnAction(ActionEvent event) throws IOException {
         
         Answer res = listAnswers.get(0);
         System.out.println(res.getText());
@@ -152,10 +198,11 @@ public class FXMLRespuestasController implements Initializable {
             alertaIncorrecto();
             faults++;
         }
+        System.out.println("aciertos: "+ hits + "fallos: " + faults);
     }
 
     @FXML
-    private void buttonBOnAction(ActionEvent event) {
+    private void buttonBOnAction(ActionEvent event) throws IOException {
         
         Answer res = listAnswers.get(1);
         System.out.println(res.getText());
@@ -166,10 +213,11 @@ public class FXMLRespuestasController implements Initializable {
             alertaIncorrecto();
             faults++;
         }
+        System.out.println("aciertos: "+ hits + "fallos: " + faults);
     }
 
     @FXML
-    private void buttonCOnAction(ActionEvent event) {
+    private void buttonCOnAction(ActionEvent event) throws IOException {
         
         Answer res = listAnswers.get(2);
         System.out.println(res.getText());
@@ -181,10 +229,11 @@ public class FXMLRespuestasController implements Initializable {
             alertaIncorrecto();
             faults++;
         }
+        System.out.println("aciertos: "+ hits + "fallos: " + faults);
     }
 
     @FXML
-    private void buttonDOnAction(ActionEvent event) {
+    private void buttonDOnAction(ActionEvent event) throws IOException {
         
         Answer res = listAnswers.get(3);
         System.out.println(res.getText());
@@ -195,6 +244,7 @@ public class FXMLRespuestasController implements Initializable {
             alertaIncorrecto();
             faults++;
         }
+        System.out.println("aciertos: "+ hits + "fallos: " + faults);
     }
     
 }

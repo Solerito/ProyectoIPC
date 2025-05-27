@@ -41,6 +41,7 @@ public class CerrarSesionController implements Initializable {
     private Session ses;
     private int hits;
     private int faults;
+    private LocalDateTime datetime;
     
     private String nick;
     private String pass;
@@ -51,6 +52,7 @@ public class CerrarSesionController implements Initializable {
     private User user;
     private Navigation nav;
     
+    
     public void initUser(String u, String e,String p, Image a,LocalDateTime dt ){
             nick = u;
             email = e;
@@ -59,8 +61,10 @@ public class CerrarSesionController implements Initializable {
             birthday = dt;        
         }
     
-    public void getSesion(int h, int f){
-    
+    public void initSesion(int h, int f,LocalDateTime dt){
+        hits = h;
+        faults = f;
+        datetime = dt;
     }
     
     /**
@@ -80,8 +84,10 @@ public class CerrarSesionController implements Initializable {
 
     @FXML
     private void handleBAcceptOnAction(ActionEvent event) throws Exception {
-        //user.addSession(hits, faults,LocalDateTime.now());
-        ((Stage)((Node)event.getSource()).getScene().getWindow()).close();
+        Session ses = new Session(datetime.now(), hits, faults);
+        user.addSession(hits, faults);
+        
+        ((Stage)((Node)event.getSource()).getScene().getWindow()).hide();
         poiupv.PoiUPVApp.reiniciarApp();
     }
 

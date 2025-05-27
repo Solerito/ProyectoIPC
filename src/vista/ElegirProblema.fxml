@@ -94,13 +94,6 @@
                      </VBox.margin>
                   </ListView>
                   <HBox alignment="BOTTOM_RIGHT" prefHeight="112.0" prefWidth="278.0">
-                     <children>
-                        <Button fx:id="botonHacerEjercicio" mnemonicParsing="false" onAction="#realizarEjercicioButtonOnAction" text="Hacer Ejercicio">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Button>
-                     </children>
                      <VBox.margin>
                         <Insets bottom="15.0" />
                      </VBox.margin>

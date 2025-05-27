@@ -42,7 +42,6 @@ import poiupv.TrabajoController;
 
 public class ElegirProblemaController implements Initializable {
 
-    @FXML
     private Button botonHacerEjercicio;
 
     private String nick;
@@ -74,12 +73,24 @@ public class ElegirProblemaController implements Initializable {
     
     private Problem selectedProblem;
     private int indice;
+    private int hits;
+    private int faults;
     
     @FXML
     private ImageView ivPerfil;
     
-    
+    public void initUser(String u, String e,String p, Image a,LocalDate dt ){
+            nick = u;
+            email = e;
+            pass = p;
+            avatar = a;
+            birthday = dt;        
+        }
 
+    public void initSes(int h, int f){
+        hits = h;
+        faults = f;
+    }
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
@@ -101,26 +112,44 @@ public class ElegirProblemaController implements Initializable {
         
         listaProblemas.getItems().addAll("Problema 1", "Problema 2", "Problema 3", "Problema 4", "Problema 5", "Problema 6", "Problema 7", "Problema 8", "Problema 9","Problema 10", "Problema 11", "Problema 12", "Problema 13", "Problema 14", "Problema 15", "Problema 16", "Problema 17", "Problema 18");
         //ivPerfil.imageProperty().setValue(avatar);
-        botonHacerEjercicio.setDisable(true);
-        listaProblemas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            // Si hay un elemento seleccionado, habilitamos el botón, sino lo deshabilitamos
-            botonHacerEjercicio.setDisable(newSelection == null);
+        
+        
+        
+        listaProblemas.setOnMouseClicked(event -> {
+        if (event.getClickCount() == 2) {
+            indice = listaProblemas.getSelectionModel().getSelectedIndex();
+            selectedProblem = ol.get(indice);
+            if (selectedProblem != null) {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/FXMLTrabajo.fxml"));
+                    Parent root = loader.load();
+
+                    FXMLTrabajoController controller = loader.getController();
+                    controller.initUser(nick, email, pass, avatar, birthday);
+                    controller.initProblema(selectedProblem, indice);
+                    controller.initSes(hits, faults);
+                    
+                    Stage stage = new Stage();
+                    stage.setScene(new Scene(root));
+                    stage.setTitle("Detalle del Problema");
+                    stage.show();
+
+                    // Cerrar la ventana actual (lista de problemas)
+                    Stage ventanaActual = (Stage) listaProblemas.getScene().getWindow();
+                    ventanaActual.close();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    }
+                }
+            }
         });
-        
-        
         
     }
     
     
-    public void initUser(String u, String e,String p, Image a,LocalDate dt ){
-            nick = u;
-            email = e;
-            pass = p;
-            avatar = a;
-            birthday = dt;        
-        }
+    
 
-    @FXML
     private void realizarEjercicioButtonOnAction(ActionEvent event) throws IOException {
         if (!listaProblemas.getSelectionModel().isEmpty()) {
             indice = listaProblemas.getSelectionModel().getSelectedIndex();
@@ -141,6 +170,7 @@ public class ElegirProblemaController implements Initializable {
         
         controlador.initProblema(selectedProblem,indice); 
         controlador.initUser(nick, email, pass, avatar, birthday);
+        
 
         // Muestra la nueva ventana
         Scene scene = new Scene(root, 900, 600);
@@ -167,6 +197,7 @@ public class ElegirProblemaController implements Initializable {
         
         Stage stage = new Stage();
         stage.setScene(new Scene(root));
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
         stage.setTitle("Cerrar Sesión");
         stage.initModality(Modality.APPLICATION_MODAL);
         
@@ -187,8 +218,9 @@ public class ElegirProblemaController implements Initializable {
 
         // Obtienes la ventana actual y cambias la escena
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root, 900, 500));  // usa el tamaño que quieras
+        stage.setScene(new Scene(root, 650, 500));  // usa el tamaño que quieras
         stage.setTitle("Pantalla de Inicio");
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
         stage.show();
     }
 
@@ -205,6 +237,7 @@ public class ElegirProblemaController implements Initializable {
             controlador2.initUser(nick, email, pass, avatar, birthday);
             controlador2.mostrarinfo(nick, email, pass, avatar, birthday);
             dialog.setScene(new Scene(root));
+            dialog.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
             dialog.showAndWait();
             
             
@@ -224,6 +257,7 @@ public class ElegirProblemaController implements Initializable {
         Stage stage = new Stage();
         stage.setScene(new Scene(root));
         stage.setTitle("Cerrar Aplicación");
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.showAndWait();
     }
@@ -231,16 +265,28 @@ public class ElegirProblemaController implements Initializable {
     @FXML
 private void botonModoAleatorioOnAction(ActionEvent event) {
     if (list != null && !list.isEmpty()) {
-        indice = (int) (Math.random() * list.size());
-        // Selecciona el problema aleatorio en el ListView
-        listaProblemas.getSelectionModel().select(indice);
-        // Opcional: hacer que ese problema seleccionado se enfoque/visible en la lista
-        listaProblemas.scrollTo(indice);
-        //int sel = listaProblemas.getSelectionModel().getSelectedIndex();
+        int indice = (int) (Math.random() * list.size());
+        //selectedProblem = list.get(indice);
         selectedProblem = ol.get(indice);
-    } else {
-        Alert alert = new Alert(Alert.AlertType.WARNING, "No hay problemas disponibles para seleccionar.");
-        alert.showAndWait();
+        listaProblemas.scrollTo(indice);
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/FXMLTrabajo.fxml"));
+            Parent root = loader.load();
+
+            FXMLTrabajoController controller = loader.getController();
+            controller.initProblema(selectedProblem, indice);
+            controller.initUser(nick, email, pass, avatar, birthday);
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
+            stage.setTitle("Detalle del Problema");
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 

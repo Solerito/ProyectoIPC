@@ -24,6 +24,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.NavDAOException;
@@ -49,7 +50,13 @@ public class InicioController implements Initializable {
     private LocalDate birthday;
     
     private Session session;
+    private User res;
+    private Navigation nav;
     private Parent root;
+    @FXML
+    private ImageView ivPerfil;
+    private int hits;
+    private int faults;
     
     public void initUser(String u, String e,String p, Image a,LocalDate dt ){
             nick = u;
@@ -74,20 +81,27 @@ public class InicioController implements Initializable {
             System.out.println("Base de datos no encontrada");
         }
         
+        try {
+            nav = Navigation.getInstance();
+        } catch (NavDAOException ex) {
+            Logger.getLogger(InicioController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        res = nav.authenticate(nick, pass);
+        
         
         
     }    
 
     @FXML
     private void realizarproblemaButtonOnAction(ActionEvent event) throws IOException, NavDAOException {
-        Navigation nav = Navigation.getInstance();
-        User res = nav.authenticate(nick, pass);
+        
         
         
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/ElegirProblema.fxml"));
         Parent root = loader.load();
         ElegirProblemaController controlador2= loader.getController();
         controlador2.initUser(nick, email, pass, avatar, birthday);
+        controlador2.initSes(hits,faults);
         Scene scene = new Scene(root,900,500);
         Stage stage = new Stage();
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
@@ -143,8 +157,8 @@ public class InicioController implements Initializable {
             
             if(controlador2.pulsadoGuardar()){
                 User user = controlador2.getUser();
-                //Image res = user.getAvatar();
-                //ivPerfil.setImage(res);
+                Image res = user.getAvatar();
+                ivPerfil.setImage(res);
                 
             }
     }

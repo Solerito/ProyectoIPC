@@ -60,7 +60,7 @@ public class FXMLAutenticarseController implements Initializable {
     private Button RegistrarseButton;
     private Button contrseñaButton;
     
-    private boolean passwordVisible = false;
+    
     
     
         
@@ -70,8 +70,7 @@ public class FXMLAutenticarseController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //BooleanBinding validFields = Bindings.and(emailField,passwordField);
-        //bAccept.disableProperty().bind(Bindings.not(validFields));
+        
         try {
             SqliteConnection sqlite = new SqliteConnection();
             sqlite.connectSqlite("C:data.db");

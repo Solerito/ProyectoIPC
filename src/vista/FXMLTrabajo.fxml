@@ -10,7 +10,6 @@
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
@@ -31,7 +30,7 @@
                <children>
                   <HBox alignment="CENTER_LEFT" prefHeight="23.0" prefWidth="794.0">
                      <children>
-                        <Button mnemonicParsing="false" prefHeight="17.0" prefWidth="42.0">
+                        <Button mnemonicParsing="false" onAction="#buttonInicioOnAction" prefHeight="17.0" prefWidth="42.0">
                            <graphic>
                               <ImageView fitHeight="24.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -324,21 +323,7 @@
          <left>
             <VBox prefHeight="509.0" prefWidth="164.0" BorderPane.alignment="CENTER">
                <children>
-                  <TextArea fx:id="taProblem" editable="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="443.0" prefWidth="194.0" />
-                  <Label text=" Selecciona la solición:" />
-                  <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-                     <children>
-                        <Button minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="26.0" prefWidth="49.0" text="A" HBox.hgrow="ALWAYS" />
-                        <Button minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="26.0" prefWidth="49.0" text="B" HBox.hgrow="ALWAYS" />
-                        <Button minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="26.0" prefWidth="49.0" text="C" HBox.hgrow="ALWAYS" />
-                        <Button alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="26.0" prefWidth="49.0" text="D" HBox.hgrow="ALWAYS" />
-                     </children>
-                  </HBox>
-                  <Separator prefWidth="200.0">
-                     <VBox.margin>
-                        <Insets bottom="10.0" top="10.0" />
-                     </VBox.margin>
-                  </Separator>
+                  <TextArea fx:id="taProblem" editable="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="481.0" prefWidth="194.0" />
                </children>
             </VBox>
          </left>

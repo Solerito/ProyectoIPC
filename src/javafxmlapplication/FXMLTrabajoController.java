@@ -176,6 +176,7 @@ private EventHandler<MouseEvent> lineDragHandler;
     @FXML
     private TextArea taProblem;
     private Problem currentProblem;
+    
     @FXML
     private Slider sliderGrosorLinea;
     @FXML
@@ -190,6 +191,8 @@ private EventHandler<MouseEvent> lineDragHandler;
     private MenuItem miCerrarAplicacion;
     @FXML
     private Button buttonTerminar;
+    
+    
 
     private void CerrarSesionAction(ActionEvent event) throws IOException, Exception {
         ivPerfil.getScene().getWindow().hide();
@@ -217,6 +220,7 @@ private EventHandler<MouseEvent> lineDragHandler;
         Stage stage = new Stage();
         stage.setScene(new Scene(root));
         stage.setTitle("Cerrar Sesión");
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
         stage.initModality(Modality.APPLICATION_MODAL);
         
         stage.show();
@@ -231,6 +235,7 @@ private EventHandler<MouseEvent> lineDragHandler;
         Stage stage = new Stage();
         stage.setScene(new Scene(root));
         stage.setTitle("Cerrar Aplicación");
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.showAndWait();
     }
@@ -253,6 +258,8 @@ private EventHandler<MouseEvent> lineDragHandler;
         }
         controlador.initProblema(problema,indice); 
         controlador.initUser(nick, email, pass, avatar, birthday);
+        
+        
 
         // Muestra la nueva ventana
         Scene scene = new Scene(root, 550, 525);
@@ -260,11 +267,34 @@ private EventHandler<MouseEvent> lineDragHandler;
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
 
         stage.setScene(scene);
+        
+        
         stage.setTitle("Realizar Problema");
         stage.showAndWait();
-
+        
+            
+        
         // Opcionalmente oculta la ventana actual (si lo deseas)
-        ((Stage)((Node) event.getSource()).getScene().getWindow()).hide();
+        
+    }
+
+    @FXML
+    private void buttonInicioOnAction(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/Inicio.fxml"));
+        Parent root = loader.load();
+        
+        InicioController controller = loader.getController();
+        // Pasamos el Stage principal (ventana que queremos cerrar)
+        Stage mainStage = (Stage) mbPerfil.getScene().getWindow();
+        
+        
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root,650,500));
+        stage.setTitle("Cerrar Sesión");
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
+        stage.initModality(Modality.APPLICATION_MODAL);
+        mainStage.close();
+        stage.show();
     }
 
     // — Estado global —
@@ -283,7 +313,7 @@ private EventHandler<MouseEvent> lineDragHandler;
     private double  grosorLinea  = 4;      // ← grosor “grueso” por defecto
 
     // — Arco —
-    private boolean arcStarted   = false;
+    
     private double  arcCenterX, arcCenterY;
     private Color   colorArco    = Color.RED;
     private double  grosorArco   = 4; 
@@ -293,21 +323,29 @@ private EventHandler<MouseEvent> lineDragHandler;
     private double tamanoTexto = 12;
     private Color  colorTexto  = Color.RED;
     private String textoPendiente;   
+         
+
+    // — Arco —
+    private boolean arcStarted   = false;
+    
+    
 
     // — Edición Color —
     private Color colorEdicion = Color.BLACK;
 
+    
     // — Compás, Regla, Transportador —
     private Point2D compasP1, compasP2;
     private Point2D rulerP1, rulerP2;
     private Circle   protractorNode;
     private ImageView ivOverlay;
-private Group previewArcGroup;
-private EventHandler<MouseEvent> arcDragHandler;
-private Arc previewArc;
-private enum ModoArco { RADIO_FIJO, RADIO_LIBRE }
-private ModoArco modoArco = ModoArco.RADIO_FIJO;
+    private Group previewArcGroup;
+    private EventHandler<MouseEvent> arcDragHandler;
+    private Arc previewArc;
+    private enum ModoArco { RADIO_FIJO, RADIO_LIBRE }
+    private ModoArco modoArco = ModoArco.RADIO_FIJO;
 
+    
     private Navigation nav;
 
     private String nick;
@@ -321,6 +359,9 @@ private ModoArco modoArco = ModoArco.RADIO_FIJO;
     private ObservableList<Problem> ol;
     private Problem problema;
     private int indice;
+    private int hits;
+    private int faults;
+   
     
     public void initUser(String u, String e,String p, Image a,LocalDate dt ){
             nick = u;
@@ -333,9 +374,18 @@ private ModoArco modoArco = ModoArco.RADIO_FIJO;
     public void initProblema(Problem p, int i){
         problema = p;
         indice = i;
+        
+        String res = problema.getText();
+        taProblem.setText(res);
     }
-
-
+    
+    public void initSes(int h, int f){
+        hits = h;
+        faults = f;
+    }
+    
+    
+    
     @Override
 public void initialize(URL url, ResourceBundle rb) {
     if (taProblem == null) {
@@ -356,16 +406,15 @@ public void initialize(URL url, ResourceBundle rb) {
     try{
             nav = Navigation.getInstance();
             user = nav.authenticate(nick, pass);
-            listProblem = nav.getProblems();
-            ol = FXCollections.observableArrayList(listProblem);
+            
         } catch (NavDAOException ex) {
             System.out.println("Nav exception");
     }
         
-        problema = ol.get(indice);
-        String res = problema.getText();
-        System.out.println(res);
-        taProblem.setText(res);
+        //problema = ol.get(indice);
+        //String res = problema.getText();
+        //System.out.println(res);
+        //taProblem.setText(res);
     
     // 1) Tu setup original
     setupZoom();

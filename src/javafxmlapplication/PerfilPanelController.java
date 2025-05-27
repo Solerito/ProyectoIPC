@@ -30,6 +30,7 @@ import model.Navigation;
 import model.User;
 import model.sub.SqliteConnection;
 
+
 public class PerfilPanelController implements Initializable{
 
     
@@ -52,6 +53,7 @@ public class PerfilPanelController implements Initializable{
     private Boolean pulsadoGuardar;
     private User user;
     private Navigation nav;
+    
     
     
     public void initUser(String u, String e,String p, Image a,LocalDate dt ){
